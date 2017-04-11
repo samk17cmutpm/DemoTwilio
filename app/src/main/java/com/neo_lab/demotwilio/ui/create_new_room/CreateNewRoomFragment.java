@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 
 import com.neo_lab.demotwilio.R;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
+import com.neo_lab.demotwilio.ui.main.MainActivity;
 import com.neo_lab.demotwilio.utils.activity.ActivityUtils;
 import com.neo_lab.demotwilio.utils.toolbar.ToolbarUtils;
 
@@ -78,6 +80,7 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
 
         ToolbarUtils.initialize(toolbar, activity, R.string.app_name);
 
+
     }
 
     @Override
@@ -114,7 +117,7 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
 
     @Override
     public void navigateToMainActivity() {
-//        ActivityUtils.startActivity(activity, );
+        ActivityUtils.startActivity(activity, MainActivity.class);
     }
 
     @Override
@@ -130,8 +133,11 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
 
     @OnClick(R.id.bt_connect)
     public void storeRoomName() {
-        if (validateInputs())
+        if (validateInputs()) {
             storeNewRoomName(edRoomName.getText().toString());
+            navigateToMainActivity();
+        }
+
     }
 
 }

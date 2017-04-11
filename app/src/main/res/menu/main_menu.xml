@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_share_screen"
+        android:icon="@drawable/ic_share_screen"
+        app:showAsAction="ifRoom"
+        android:title="Share Screen">
+    </item>
+    <item
+        android:id="@+id/action_record_screen"
+        android:icon="@drawable/ic_record_screen"
+        app:showAsAction="ifRoom"
+        android:title="Record Screen">
+    </item>
+</menu>
