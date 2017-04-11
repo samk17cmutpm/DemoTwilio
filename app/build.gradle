@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.neo_lab.demotwilio"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -47,4 +47,7 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+
+    // Twilio Chat Android
+    compile "com.twilio:chat-android:0.12.1"
 }
