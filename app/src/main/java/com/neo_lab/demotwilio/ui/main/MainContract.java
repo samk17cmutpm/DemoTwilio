@@ -10,11 +10,14 @@ import com.neo_lab.demotwilio.ui.base.BaseView;
 public interface MainContract {
 
     interface View extends BaseView<Presenter> {
+
         void showUI();
 
         void initializeVideoRoom();
 
         void initializeCamera();
+
+        void navigateToChattingRoom();
     }
 
     interface Presenter extends BasePresenter {

@@ -4,10 +4,57 @@
     android:layout_height="match_parent"
     tools:context="com.neo_lab.demotwilio.ui.chatting.ChattingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <include layout="@layout/toolbar"
+            android:id="@+id/include" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_below="@+id/include">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/messagesRecyclerView"
+                android:scrollbars="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="10"
+                android:paddingLeft="@dimen/general_magrin"
+                android:paddingRight="@dimen/general_magrin"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/colorPrimaryDark"
+                android:paddingLeft="@dimen/general_magrin"
+                android:paddingRight="@dimen/general_magrin"
+                android:paddingTop="@dimen/general_magrin"
+                android:paddingBottom="@dimen/general_magrin">
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="9.53"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/writeMessageEditText"
+                    android:layout_marginEnd="@dimen/general_magrin"
+                    android:textColor="@color/colorAccent" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/send"
+                    android:id="@+id/sendChatMessageButton"/>
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </FrameLayout>

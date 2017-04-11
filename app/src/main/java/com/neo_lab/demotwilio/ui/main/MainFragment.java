@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.neo_lab.demotwilio.R;
+import com.neo_lab.demotwilio.ui.chatting.ChattingActivity;
+import com.neo_lab.demotwilio.utils.activity.ActivityUtils;
 import com.neo_lab.demotwilio.utils.toolbar.ToolbarUtils;
 
 import butterknife.BindView;
@@ -97,7 +99,9 @@ public class MainFragment extends Fragment implements MainContract.View {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("TAG", "MainFragment");
+
+                navigateToChattingRoom();
+
             }
         });
 
@@ -111,5 +115,10 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public void initializeCamera() {
 
+    }
+
+    @Override
+    public void navigateToChattingRoom() {
+        ActivityUtils.startActivity(activity, ChattingActivity.class);
     }
 }
