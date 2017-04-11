@@ -17,6 +17,23 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    // Specify that we want to split up the APK based on ABI
+    splits {
+        abi {
+            // Enable ABI split
+            enable true
+
+            // Clear list of ABIs
+            reset()
+
+            // Specify each architecture currently supported by the Video SDK
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+
+            // Specify that we do not want an additional universal SDK
+            universalApk false
+        }
+    }
 }
 
 dependencies {
@@ -50,4 +67,5 @@ dependencies {
 
     // Twilio Chat Android
     compile "com.twilio:chat-android:0.12.1"
+    compile "com.twilio:video-android:1.0.0-beta15"
 }
