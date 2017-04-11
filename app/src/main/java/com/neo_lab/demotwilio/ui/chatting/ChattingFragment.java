@@ -57,9 +57,9 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
 
     private ArrayList<Message> messages;
 
-    private ChatClient mChatClient;
+    private ChatClient chatClient;
 
-    private Channel mGeneralChannel;
+    private Channel channel;
 
     private static final String TAG = ChattingFragment.class.getName();
 
@@ -138,11 +138,11 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
         sendChatMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mGeneralChannel != null) {
+                if (channel != null) {
                     String messageBody = writeMessageEditText.getText().toString();
-                    Message message = mGeneralChannel.getMessages().createMessage(messageBody);
+                    Message message = channel.getMessages().createMessage(messageBody);
                     Log.d(TAG,"Message created");
-                    mGeneralChannel.getMessages().sendMessage(message, new StatusListener() {
+                    channel.getMessages().sendMessage(message, new StatusListener() {
                         @Override
                         public void onSuccess() {
                             activity.runOnUiThread(new Runnable() {
@@ -196,19 +196,19 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
         ChatClient.Properties.Builder builder = new ChatClient.Properties.Builder();
         builder.setSynchronizationStrategy(ChatClient.SynchronizationStrategy.ALL);
         ChatClient.Properties props = builder.createProperties();
-        ChatClient.create(activity, accessToken, props, mChatClientCallback);
+        ChatClient.create(activity, accessToken, props, chatClientCallbackListener);
 
     }
 
     private void loadChannels() {
         final String nameRoomChat = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT);
-        mChatClient.getChannels().getChannel(nameRoomChat, new CallbackListener<Channel>() {
+        chatClient.getChannels().getChannel(nameRoomChat, new CallbackListener<Channel>() {
             @Override
             public void onSuccess(Channel channel) {
                 if (channel != null) {
                     joinChannel(channel);
                 } else {
-                    mChatClient.getChannels().createChannel(nameRoomChat,
+                    chatClient.getChannels().createChannel(nameRoomChat,
                             Channel.ChannelType.PUBLIC, new CallbackListener<Channel>() {
                                 @Override
                                 public void onSuccess(Channel channel) {
@@ -239,9 +239,9 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
         channel.join(new StatusListener() {
             @Override
             public void onSuccess() {
-                mGeneralChannel = channel;
+                ChattingFragment.this.channel = channel;
                 Log.d(TAG, "Joined default channel");
-                mGeneralChannel.addListener(mDefaultChannelListener);
+                ChattingFragment.this.channel.addListener(defaultChannelListener);
             }
 
             @Override
@@ -251,11 +251,11 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
         });
     }
 
-    private CallbackListener<ChatClient> mChatClientCallback =
+    private CallbackListener<ChatClient> chatClientCallbackListener =
             new CallbackListener<ChatClient>() {
                 @Override
                 public void onSuccess(ChatClient chatClient) {
-                    mChatClient = chatClient;
+                    ChattingFragment.this.chatClient = chatClient;
                     loadChannels();
                     Log.d(TAG, "Success creating Twilio Chat Client");
                 }
@@ -266,7 +266,7 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
                 }
             };
 
-    private ChannelListener mDefaultChannelListener = new ChannelListener() {
+    private ChannelListener defaultChannelListener = new ChannelListener() {
         @Override
         public void onMessageAdd(final Message message) {
             Log.d(TAG, "Message added");
@@ -326,11 +326,11 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
 
         class ViewHolder extends RecyclerView.ViewHolder {
 
-            public TextView mMessageTextView;
+            public TextView messageTextView;
 
             public ViewHolder(TextView textView) {
                 super(textView);
-                mMessageTextView = textView;
+                messageTextView = textView;
             }
         }
 
@@ -350,7 +350,7 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
         public void onBindViewHolder(ViewHolder holder, int position) {
             Message message = messages.get(position);
             String messageText = String.format("%s: %s", message.getAuthor(), message.getMessageBody());
-            holder.mMessageTextView.setText(messageText);
+            holder.messageTextView.setText(messageText);
 
         }
 
