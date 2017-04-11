@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">DemoTwilio</string>
 
+
+    <string name="error_general_input_empty">Please fill here</string>
+
     <!-- Screen New Room Name -->
     <string name="name_room_hint">Enter the room name</string>
     <string name="connect_room">Connect</string>

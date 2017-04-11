@@ -11,6 +11,12 @@ public interface CreateNewRoomContract {
 
     interface View extends BaseView<Presenter> {
         void showUI();
+
+        boolean validateInputs();
+
+        void storeNewRoomName(String roomName);
+
+        void navigateToMainActivity();
     }
 
     interface Presenter extends BasePresenter {

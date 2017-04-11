@@ -2,8 +2,10 @@ package com.neo_lab.demotwilio.ui.create_new_room;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.neo_lab.demotwilio.R;
+import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
 import com.neo_lab.demotwilio.utils.activity.ActivityUtils;
 
 public class CreateNewRoomActivity extends AppCompatActivity {
