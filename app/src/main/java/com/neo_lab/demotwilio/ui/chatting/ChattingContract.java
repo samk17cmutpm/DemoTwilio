@@ -15,6 +15,10 @@ public interface ChattingContract {
         void showUI();
 
         void onListenerRequestToken(boolean status, String message, Token token);
+
+        void updateStatusRequestToken(boolean status, String message);
+
+        void createChattingRom(String accessToken);
     }
 
     interface Presenter extends BasePresenter {

@@ -7,7 +7,7 @@ import com.neo_lab.demotwilio.model.Token;
  * Created by sam_nguyen on 11/04/2017.
  */
 
-public class TokenResponse implements Token {
+public class TokenServer implements Token {
 
     @SerializedName("identity")
     private String identity;

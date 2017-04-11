@@ -1,7 +1,7 @@
 package com.neo_lab.demotwilio.ui.chatting;
 
 import com.neo_lab.demotwilio.domain.generator.ServiceGenerator;
-import com.neo_lab.demotwilio.domain.response.TokenResponse;
+import com.neo_lab.demotwilio.domain.response.TokenServer;
 import com.neo_lab.demotwilio.domain.services.TokenService;
 
 
@@ -41,13 +41,13 @@ public class ChattingPresenter implements ChattingContract.Presenter {
     @Override
     public void requestToken(String deviceId, String userName) {
 
-        Observable<Response<TokenResponse>> observable =
+        Observable<Response<TokenServer>> observable =
                 service.getTokenChatting(deviceId, userName);
 
 
         subscriptions.add(observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<TokenResponse>>() {
+                .subscribe(new Subscriber<Response<TokenServer>>() {
                     @Override
                     public void onCompleted() {
 
@@ -55,11 +55,17 @@ public class ChattingPresenter implements ChattingContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
                     }
 
                     @Override
-                    public void onNext(Response<TokenResponse> tokenResponseResponse) {
+                    public void onNext(Response<TokenServer> tokenServerResponse) {
+
+                        if (tokenServerResponse.isSuccessful()) {
+                            view.onListenerRequestToken(true, "Success", tokenServerResponse.body());
+                        } else {
+                            view.onListenerRequestToken(false, "Failed", null);
+                        }
 
                     }
                 })
