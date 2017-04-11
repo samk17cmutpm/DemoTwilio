@@ -62,9 +62,9 @@ public class ChattingPresenter implements ChattingContract.Presenter {
                     public void onNext(Response<TokenServer> tokenServerResponse) {
 
                         if (tokenServerResponse.isSuccessful()) {
-                            view.onListenerRequestToken(true, "Success", tokenServerResponse.body());
+                            view.onListenerRequestChattingToken(true, "Success", tokenServerResponse.body());
                         } else {
-                            view.onListenerRequestToken(false, "Failed", null);
+                            view.onListenerRequestChattingToken(false, "Failed", null);
                         }
 
                     }

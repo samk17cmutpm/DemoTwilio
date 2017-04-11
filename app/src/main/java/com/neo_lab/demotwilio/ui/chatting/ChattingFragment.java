@@ -167,9 +167,9 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
     }
 
     @Override
-    public void onListenerRequestToken(boolean status, String message, Token token) {
+    public void onListenerRequestChattingToken(boolean status, String message, Token token) {
 
-        updateStatusRequestToken(status, message);
+        updateStatusRequestChattingToken(status, message);
 
         if (status) {
             createChattingRom(token.getToken());
@@ -178,7 +178,7 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
     }
 
     @Override
-    public void updateStatusRequestToken(boolean status, String message) {
+    public void updateStatusRequestChattingToken(boolean status, String message) {
         int color;
         if (status) {
             color = getResources().getColor(R.color.white);

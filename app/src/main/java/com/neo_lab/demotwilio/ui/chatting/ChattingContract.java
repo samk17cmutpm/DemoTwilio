@@ -14,9 +14,9 @@ public interface ChattingContract {
 
         void showUI();
 
-        void onListenerRequestToken(boolean status, String message, Token token);
+        void onListenerRequestChattingToken(boolean status, String message, Token token);
 
-        void updateStatusRequestToken(boolean status, String message);
+        void updateStatusRequestChattingToken(boolean status, String message);
 
         void createChattingRom(String accessToken);
     }

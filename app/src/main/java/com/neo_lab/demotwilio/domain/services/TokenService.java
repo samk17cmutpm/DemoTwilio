@@ -17,4 +17,7 @@ public interface TokenService {
     @GET("token")
     Observable<Response<TokenServer>> getTokenChatting(@Query("device") String deviceId, @Query("username") String userName);
 
+    @GET("tokenVideo")
+    Observable<Response<TokenServer>> getTokenVideo(@Query("device") String deviceId, @Query("username") String userName);
+
 }

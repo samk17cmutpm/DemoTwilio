@@ -1,5 +1,6 @@
 package com.neo_lab.demotwilio.ui.main;
 
+import com.neo_lab.demotwilio.model.Token;
 import com.neo_lab.demotwilio.ui.base.BasePresenter;
 import com.neo_lab.demotwilio.ui.base.BaseView;
 
@@ -18,9 +19,15 @@ public interface MainContract {
         void initializeCamera();
 
         void navigateToChattingRoom();
+
+        void onListenerRequestVideoToken(boolean status, String message, Token token);
+
+        void updateStatusRequestVideoToken(boolean status, String message);
     }
 
     interface Presenter extends BasePresenter {
+
+        void requestTokenVideo(String deviceId, String userName);
 
     }
 }

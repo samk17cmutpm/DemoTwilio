@@ -3,6 +3,7 @@ package com.neo_lab.demotwilio.ui.main;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.neo_lab.demotwilio.R;
+import com.neo_lab.demotwilio.model.Token;
 import com.neo_lab.demotwilio.ui.chatting.ChattingActivity;
 import com.neo_lab.demotwilio.utils.activity.ActivityUtils;
 import com.neo_lab.demotwilio.utils.toolbar.ToolbarUtils;
@@ -79,6 +81,11 @@ public class MainFragment extends Fragment implements MainContract.View {
 
         showUI();
 
+        // Get Device Id
+        String deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        presenter.requestTokenVideo(deviceId, "Nguyen_Van_Sam");
+
         return root;
     }
 
@@ -120,5 +127,15 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public void navigateToChattingRoom() {
         ActivityUtils.startActivity(activity, ChattingActivity.class);
+    }
+
+    @Override
+    public void onListenerRequestVideoToken(boolean status, String message, Token token) {
+
+    }
+
+    @Override
+    public void updateStatusRequestVideoToken(boolean status, String message) {
+
     }
 }
