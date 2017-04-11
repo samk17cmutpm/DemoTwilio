@@ -92,10 +92,16 @@ public class MainFragment extends Fragment implements MainContract.View {
      * Android application UI elements
      */
     @BindView(R.id.video_status_textview) TextView videoStatusTextView;
+
     private CameraCapturer cameraCapturer;
+
     private LocalMedia localMedia;
+
     private LocalAudioTrack localAudioTrack;
+
     private LocalVideoTrack localVideoTrack;
+
+
     @BindView(R.id.connect_action_fab) FloatingActionButton connectActionFab;
     @BindView(R.id.switch_camera_action_fab) FloatingActionButton switchCameraActionFab;
     @BindView(R.id.local_video_action_fab) FloatingActionButton localVideoActionFab;
