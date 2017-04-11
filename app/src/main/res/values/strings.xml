@@ -17,5 +17,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="screen_capture_error">Screen capturer error occurred.</string>
+
+    <string name="screen_capture_permission_not_granted">Screen capture permission not granted</string>
+
     <string name="permissions_needed">Camera and Microphone permissions needed. Please allow in App Settings for additional functionality.</string>
 </resources>

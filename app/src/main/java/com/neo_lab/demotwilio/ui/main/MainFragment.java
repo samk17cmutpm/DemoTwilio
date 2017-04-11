@@ -5,16 +5,21 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,6 +49,7 @@ import com.twilio.video.Media;
 import com.twilio.video.Participant;
 import com.twilio.video.Room;
 import com.twilio.video.RoomState;
+import com.twilio.video.ScreenCapturer;
 import com.twilio.video.TwilioException;
 import com.twilio.video.Video;
 import com.twilio.video.VideoRenderer;
@@ -58,6 +64,8 @@ import butterknife.ButterKnife;
 public class MainFragment extends Fragment implements MainContract.View {
 
     private static final int CAMERA_MIC_PERMISSION_REQUEST_CODE = 1;
+
+    private static final int REQUEST_MEDIA_PROJECTION = 100;
 
     private static final String TAG = "VideoActivity";
 
@@ -95,12 +103,28 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     private CameraCapturer cameraCapturer;
 
+    private ScreenCapturer screenCapturer;
+
+    private final ScreenCapturer.Listener screenCapturerListener = new ScreenCapturer.Listener() {
+        @Override
+        public void onScreenCaptureError(String errorDescription) {
+            Log.e(TAG, "Screen capturer error: " + errorDescription);
+            stopScreenCapture();
+            Toast.makeText(getActivity(), R.string.screen_capture_error,
+                    Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onFirstFrameAvailable() {
+            Log.d(TAG, "First frame from screen capturer available");
+        }
+    };
+
     private LocalMedia localMedia;
 
     private LocalAudioTrack localAudioTrack;
 
     private LocalVideoTrack localVideoTrack;
-
 
     @BindView(R.id.connect_action_fab) FloatingActionButton connectActionFab;
     @BindView(R.id.switch_camera_action_fab) FloatingActionButton switchCameraActionFab;
@@ -146,6 +170,11 @@ public class MainFragment extends Fragment implements MainContract.View {
             case R.id.action_record_screen:
                 return true;
             case R.id.action_share_screen:
+                if (screenCapturer == null) {
+                    requestScreenCapturePermission();
+                } else {
+                    startScreenCapture();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -321,6 +350,13 @@ public class MainFragment extends Fragment implements MainContract.View {
          * Release the local media ensuring any memory allocated to audio or video is freed.
          */
         if (localMedia != null) {
+
+            // This one for capture screen
+            if (localVideoTrack != null) {
+                localMedia.removeVideoTrack(localVideoTrack);
+            }
+
+            // Not this one
             localMedia.release();
             localMedia = null;
         }
@@ -739,6 +775,40 @@ public class MainFragment extends Fragment implements MainContract.View {
         } else {
             audioManager.setMode(previousAudioMode);
             audioManager.abandonAudioFocus(null);
+        }
+    }
+
+    private void startScreenCapture() {
+        localVideoTrack = localMedia.addVideoTrack(true, screenCapturer);
+        localVideoTrack.addRenderer(thumbnailVideoView);
+    }
+
+    private void stopScreenCapture() {
+        localVideoTrack.removeRenderer(thumbnailVideoView);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_MEDIA_PROJECTION) {
+            if (resultCode != AppCompatActivity.RESULT_OK) {
+                Toast.makeText(activity, R.string.screen_capture_permission_not_granted,
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            screenCapturer = new ScreenCapturer(activity, resultCode, data, screenCapturerListener);
+            startScreenCapture();
+        }
+    }
+
+    private void requestScreenCapturePermission() {
+        Log.d(TAG, "Requesting permission to capture screen");
+        MediaProjectionManager mediaProjectionManager = (MediaProjectionManager)
+                activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+
+        // This initiates a prompt dialog for the user to confirm screen projection.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(),
+                    REQUEST_MEDIA_PROJECTION);
         }
     }
 }
