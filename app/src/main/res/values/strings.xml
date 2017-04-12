@@ -12,6 +12,7 @@
 
     <!-- Screen New Room Name -->
     <string name="name_room_hint">Enter the room name</string>
+    <string name="user_name_hint">Enter the user name</string>
     <string name="connect_room">Connect</string>
 
     <string name="share_screen">Share screen</string>

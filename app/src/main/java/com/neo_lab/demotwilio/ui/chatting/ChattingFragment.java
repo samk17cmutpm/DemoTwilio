@@ -95,9 +95,10 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
 
         // Get Device Id
         String deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String userName = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.USER_NAME);
 
         // Request Token From Server
-        presenter.requestToken(deviceId, "Nguyen_Van_Sam");
+        presenter.requestToken(deviceId, userName);
 
         return root;
     }

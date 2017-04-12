@@ -35,6 +35,8 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
 
     @BindView(R.id.ed_room_name) EditText edRoomName;
 
+    @BindView(R.id.ed_user_name) EditText edUserName;
+
     public CreateNewRoomFragment() {
         // Required empty public constructor
     }
@@ -89,6 +91,7 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
         edRoomName.setError(null);
 
         String roomName = this.edRoomName.getText().toString();
+        String userName = this.edUserName.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -102,6 +105,15 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
 
         }
 
+        if (TextUtils.isEmpty(roomName)) {
+
+            this.edUserName.setError(getString(R.string.error_general_input_empty));
+
+            focusView = this.edUserName;
+            cancel = true;
+
+        }
+
         if (cancel) {
             focusView.requestFocus();
         } else {
@@ -110,9 +122,12 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
     }
 
     @Override
-    public void storeNewRoomName(String roomName) {
+    public void storeNewRoomName(String roomName, String userName) {
         SharedPreferencesManager.getInstance(activity)
                 .put(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT, roomName);
+        SharedPreferencesManager.getInstance(activity)
+                .put(SharedPreferencesManager.Key.USER_NAME, userName);
+
     }
 
     @Override
@@ -134,7 +149,7 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
     @OnClick(R.id.bt_connect)
     public void storeRoomName() {
         if (validateInputs()) {
-            storeNewRoomName(edRoomName.getText().toString());
+            storeNewRoomName(edRoomName.getText().toString(), edUserName.getText().toString());
             navigateToMainActivity();
         }
 

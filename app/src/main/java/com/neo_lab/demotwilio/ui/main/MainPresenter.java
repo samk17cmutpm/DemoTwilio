@@ -51,7 +51,7 @@ public class MainPresenter implements MainContract.Presenter {
                     @Override
                     public void handleViewOnRequestSuccess(TokenServer data) {
 
-                        view.onListenerRequestVideoToken(true, "Success", data);
+                        view.onListenerRequestVideoToken(true, "Connected Successfully", data);
 
                     }
 

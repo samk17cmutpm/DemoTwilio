@@ -20,14 +20,14 @@
 
             <include layout="@layout/content_video" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/connect_action_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:visibility="gone"
-                android:layout_margin="@dimen/general_magrin"
-                android:src="@drawable/ic_call_white_24px" />
+            <!--<android.support.design.widget.FloatingActionButton-->
+                <!--android:id="@+id/connect_action_fab"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="bottom|end"-->
+                <!--android:visibility="gone"-->
+                <!--android:layout_margin="@dimen/general_magrin"-->
+                <!--android:src="@drawable/ic_call_white_24px" />-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

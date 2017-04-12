@@ -129,7 +129,7 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     private LocalVideoTrack localVideoTrack;
 
-    @BindView(R.id.connect_action_fab) FloatingActionButton connectActionFab;
+//    @BindView(R.id.connect_action_fab) FloatingActionButton connectActionFab;
     @BindView(R.id.switch_camera_action_fab) FloatingActionButton switchCameraActionFab;
     @BindView(R.id.local_video_action_fab) FloatingActionButton localVideoActionFab;
     @BindView(R.id.mute_action_fab) FloatingActionButton muteActionFab;
@@ -192,12 +192,6 @@ public class MainFragment extends Fragment implements MainContract.View {
                 }
 
                 return true;
-//                if (screenCapturer == null) {
-//                    requestScreenCapturePermission();
-//                } else {
-//                    startScreenCapture();
-//                }
-//                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -426,7 +420,9 @@ public class MainFragment extends Fragment implements MainContract.View {
         // Get Device Id
         String deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        presenter.requestTokenVideo(deviceId, "Nguyen_Van_Sam");
+        String userName = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.USER_NAME);
+
+        presenter.requestTokenVideo(deviceId, userName);
     }
 
     private void connectToRoom(String roomName, String accessToken) {
@@ -443,10 +439,10 @@ public class MainFragment extends Fragment implements MainContract.View {
      * The initial state when there is no active conversation.
      */
     private void intializeUI() {
-        connectActionFab.setImageDrawable(ContextCompat.getDrawable(activity,
-                R.drawable.ic_call_white_24px));
-        connectActionFab.show();
-        connectActionFab.setOnClickListener(connectActionClickListener());
+//        connectActionFab.setImageDrawable(ContextCompat.getDrawable(activity,
+//                R.drawable.ic_call_white_24px));
+//        connectActionFab.hide();
+//        connectActionFab.setOnClickListener(connectActionClickListener());
         switchCameraActionFab.show();
         switchCameraActionFab.setOnClickListener(switchCameraClickListener());
         localVideoActionFab.show();
@@ -459,10 +455,10 @@ public class MainFragment extends Fragment implements MainContract.View {
      * The actions performed during disconnect.
      */
     private void setDisconnectAction() {
-        connectActionFab.setImageDrawable(ContextCompat.getDrawable(activity,
-                R.drawable.ic_call_end_white_24px));
-        connectActionFab.show();
-        connectActionFab.setOnClickListener(disconnectClickListener());
+//        connectActionFab.setImageDrawable(ContextCompat.getDrawable(activity,
+//                R.drawable.ic_call_end_white_24px));
+//        connectActionFab.show();
+//        connectActionFab.setOnClickListener(disconnectClickListener());
     }
 
     /*
@@ -483,7 +479,7 @@ public class MainFragment extends Fragment implements MainContract.View {
          * This app only displays video for one additional participant per Room
          */
         if (thumbnailVideoView.getVisibility() == View.VISIBLE) {
-            Snackbar.make(connectActionFab,
+            Snackbar.make(thumbnailVideoView,
                     "Multiple participants are not currently support in this UI",
                     Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
@@ -802,6 +798,7 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     private void startScreenCapture() {
         localVideoTrack = localMedia.addVideoTrack(true, screenCapturer);
+        localVideoTrack.removeRenderer(thumbnailVideoView);
         localVideoTrack.addRenderer(thumbnailVideoView);
         screenCaptureMenuItem.setIcon(R.drawable.ic_stop_screen_share_white_24dp);
         screenCaptureMenuItem.setTitle(R.string.stop_screen_share);
@@ -810,7 +807,7 @@ public class MainFragment extends Fragment implements MainContract.View {
     private void stopScreenCapture() {
         localVideoTrack.removeRenderer(thumbnailVideoView);
         localVideoTrack = localMedia.addVideoTrack(true, cameraCapturer);
-        localVideoTrack.addRenderer(thumbnailVideoView);
+        localVideoTrack.addRenderer(localVideoView);
         screenCaptureMenuItem.setIcon(R.drawable.ic_share_screen);
         screenCaptureMenuItem.setTitle(R.string.share_screen);
     }
@@ -838,5 +835,13 @@ public class MainFragment extends Fragment implements MainContract.View {
             startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(),
                     REQUEST_MEDIA_PROJECTION);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (room != null) {
+            room.disconnect();
+        }
+        super.onDestroyView();
     }
 }

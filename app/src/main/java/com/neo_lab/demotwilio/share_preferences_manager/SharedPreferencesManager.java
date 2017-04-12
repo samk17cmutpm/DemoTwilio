@@ -20,7 +20,8 @@ public class SharedPreferencesManager {
     private boolean mBulkUpdate = false;
 
     public enum Key {
-        NAME_OF_ROOM_CHAT
+        NAME_OF_ROOM_CHAT,
+        USER_NAME
     }
 
     private SharedPreferencesManager(Context context) {

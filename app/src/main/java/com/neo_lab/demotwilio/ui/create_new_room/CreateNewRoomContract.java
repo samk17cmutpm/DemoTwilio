@@ -14,7 +14,7 @@ public interface CreateNewRoomContract {
 
         boolean validateInputs();
 
-        void storeNewRoomName(String roomName);
+        void storeNewRoomName(String roomName, String userName);
 
         void navigateToMainActivity();
     }
