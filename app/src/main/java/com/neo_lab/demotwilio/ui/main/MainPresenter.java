@@ -1,8 +1,10 @@
 package com.neo_lab.demotwilio.ui.main;
 
+import com.neo_lab.demotwilio.domain.error.APIError;
 import com.neo_lab.demotwilio.domain.generator.ServiceGenerator;
 import com.neo_lab.demotwilio.domain.response.TokenServer;
 import com.neo_lab.demotwilio.domain.services.TokenService;
+import com.neo_lab.demotwilio.ui.base.BaseSubscriber;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -45,31 +47,26 @@ public class MainPresenter implements MainContract.Presenter {
 
         subscriptions.add(observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<TokenServer>>() {
+                .subscribe(new BaseSubscriber<TokenServer>() {
                     @Override
-                    public void onCompleted() {
+                    public void handleViewOnRequestSuccess(TokenServer data) {
+
+                        view.onListenerRequestVideoToken(true, "Success", data);
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-
-                        e.printStackTrace();
-
+                    public void handleViewOnRequestError(APIError apiError) {
+                        view.onListenerRequestVideoToken(false, apiError.message(), null);
                     }
 
                     @Override
-                    public void onNext(Response<TokenServer> tokenServerResponse) {
-
-                        if (tokenServerResponse.isSuccessful()) {
-                            view.onListenerRequestVideoToken(true, "Success", tokenServerResponse.body());
-                        } else {
-                            view.onListenerRequestVideoToken(false, "Failed", null);
-                        }
+                    public void handleViewOnConnectSeverError() {
 
                     }
                 })
         );
+
 
     }
 }

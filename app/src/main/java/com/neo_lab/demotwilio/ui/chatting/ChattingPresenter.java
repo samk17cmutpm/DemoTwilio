@@ -1,8 +1,10 @@
 package com.neo_lab.demotwilio.ui.chatting;
 
+import com.neo_lab.demotwilio.domain.error.APIError;
 import com.neo_lab.demotwilio.domain.generator.ServiceGenerator;
 import com.neo_lab.demotwilio.domain.response.TokenServer;
 import com.neo_lab.demotwilio.domain.services.TokenService;
+import com.neo_lab.demotwilio.ui.base.BaseSubscriber;
 
 
 import retrofit2.Response;
@@ -44,28 +46,22 @@ public class ChattingPresenter implements ChattingContract.Presenter {
         Observable<Response<TokenServer>> observable =
                 service.getTokenChatting(deviceId, userName);
 
-
         subscriptions.add(observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<TokenServer>>() {
+                .subscribe(new BaseSubscriber<TokenServer>() {
                     @Override
-                    public void onCompleted() {
+                    public void handleViewOnRequestSuccess(TokenServer data) {
+                        view.onListenerRequestChattingToken(true, "Success", data);
+                    }
+
+                    @Override
+                    public void handleViewOnRequestError(APIError apiError) {
+                        view.onListenerRequestChattingToken(false, apiError.message(), null);
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Response<TokenServer> tokenServerResponse) {
-
-                        if (tokenServerResponse.isSuccessful()) {
-                            view.onListenerRequestChattingToken(true, "Success", tokenServerResponse.body());
-                        } else {
-                            view.onListenerRequestChattingToken(false, "Failed", null);
-                        }
+                    public void handleViewOnConnectSeverError() {
 
                     }
                 })
