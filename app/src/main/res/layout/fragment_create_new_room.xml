@@ -29,9 +29,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/name_room_hint"
-                        android:textSize="@dimen/general_edit_text_size"
                         android:inputType="text"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:text="general"
+                        android:textSize="@dimen/general_edit_text_size" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -44,9 +45,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/user_name_hint"
-                        android:textSize="@dimen/general_edit_text_size"
                         android:inputType="text"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:text="testing_user"
+                        android:textSize="@dimen/general_edit_text_size" />
 
                 </android.support.design.widget.TextInputLayout>
 

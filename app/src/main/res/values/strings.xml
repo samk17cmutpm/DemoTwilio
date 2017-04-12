@@ -8,7 +8,7 @@
 
     <string name="send">Send</string>
 
-    <string name="room_status">status</string>
+    <string name="room_status">Connecting...</string>
 
     <!-- Screen New Room Name -->
     <string name="name_room_hint">Enter the room name</string>

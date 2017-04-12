@@ -176,8 +176,8 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_record_screen:
-                return true;
+//            case R.id.action_record_screen:
+//                return true;
             case R.id.action_share_screen:
                 String shareScreen = getString(R.string.share_screen);
 
@@ -326,6 +326,8 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public void onResume() {
         super.onResume();
+
+        Log.e(TAG, "onResume");
         /*
          * If the local video track was removed when the app was put in the background, add it back.
          */
@@ -344,6 +346,8 @@ public class MainFragment extends Fragment implements MainContract.View {
          * If this local video track is being shared in a Room, participants will be notified
          * that the track has been removed.
          */
+
+        Log.e(TAG, "onPause");
         if (localMedia != null && localVideoTrack != null) {
             localMedia.removeVideoTrack(localVideoTrack);
             localVideoTrack = null;
@@ -353,6 +357,8 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     @Override
     public void onDestroy() {
+
+        Log.e(TAG, "onDestroy");
         /*
          * Always disconnect from the room before leaving the Activity to
          * ensure any memory allocated to the Room resource is freed.
@@ -797,6 +803,7 @@ public class MainFragment extends Fragment implements MainContract.View {
     }
 
     private void startScreenCapture() {
+        localMedia.removeVideoTrack(localVideoTrack);
         localVideoTrack = localMedia.addVideoTrack(true, screenCapturer);
         localVideoTrack.removeRenderer(thumbnailVideoView);
         localVideoTrack.addRenderer(thumbnailVideoView);
@@ -805,9 +812,20 @@ public class MainFragment extends Fragment implements MainContract.View {
     }
 
     private void stopScreenCapture() {
+//        localVideoTrack.removeRenderer(thumbnailVideoView);
+//        localVideoTrack = localMedia.addVideoTrack(true, cameraCapturer);
+//        localVideoTrack.addRenderer(thumbnailVideoView);
+//
+//        localVideoTrack = localMedia.addVideoTrack(true, cameraCapturer);
+//        localVideoTrack.addRenderer(localVideoView);
         localVideoTrack.removeRenderer(thumbnailVideoView);
+        localMedia.removeVideoTrack(localVideoTrack);
+
+
         localVideoTrack = localMedia.addVideoTrack(true, cameraCapturer);
         localVideoTrack.addRenderer(localVideoView);
+
+
         screenCaptureMenuItem.setIcon(R.drawable.ic_share_screen);
         screenCaptureMenuItem.setTitle(R.string.share_screen);
     }
