@@ -5,7 +5,7 @@
         android:id="@+id/action_share_screen"
         android:icon="@drawable/ic_share_screen"
         app:showAsAction="ifRoom"
-        android:title="Share Screen">
+        android:title="Share screen">
     </item>
     <item
         android:id="@+id/action_record_screen"

@@ -95,6 +95,7 @@ public class MainFragment extends Fragment implements MainContract.View {
      * to an associated view.
      */
     @BindView(R.id.primary_video_view) VideoView primaryVideoView;
+
     @BindView(R.id.thumbnail_video_view) VideoView thumbnailVideoView;
     /*
      * Android application UI elements
@@ -104,6 +105,8 @@ public class MainFragment extends Fragment implements MainContract.View {
     private CameraCapturer cameraCapturer;
 
     private ScreenCapturer screenCapturer;
+
+    private MenuItem screenCaptureMenuItem;
 
     private final ScreenCapturer.Listener screenCapturerListener = new ScreenCapturer.Listener() {
         @Override
@@ -165,17 +168,36 @@ public class MainFragment extends Fragment implements MainContract.View {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        // Grab menu items for updating later
+        screenCaptureMenuItem = menu.findItem(R.id.action_share_screen);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_record_screen:
                 return true;
             case R.id.action_share_screen:
-                if (screenCapturer == null) {
-                    requestScreenCapturePermission();
+                String shareScreen = getString(R.string.share_screen);
+
+                if (item.getTitle().equals(shareScreen)) {
+                    if (screenCapturer == null) {
+                        requestScreenCapturePermission();
+                    } else {
+                        startScreenCapture();
+                    }
                 } else {
-                    startScreenCapture();
+                    stopScreenCapture();
                 }
+
                 return true;
+//                if (screenCapturer == null) {
+//                    requestScreenCapturePermission();
+//                } else {
+//                    startScreenCapture();
+//                }
+//                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -781,10 +803,16 @@ public class MainFragment extends Fragment implements MainContract.View {
     private void startScreenCapture() {
         localVideoTrack = localMedia.addVideoTrack(true, screenCapturer);
         localVideoTrack.addRenderer(thumbnailVideoView);
+        screenCaptureMenuItem.setIcon(R.drawable.ic_stop_screen_share_white_24dp);
+        screenCaptureMenuItem.setTitle(R.string.stop_screen_share);
     }
 
     private void stopScreenCapture() {
         localVideoTrack.removeRenderer(thumbnailVideoView);
+        localVideoTrack = localMedia.addVideoTrack(true, cameraCapturer);
+        localVideoTrack.addRenderer(thumbnailVideoView);
+        screenCaptureMenuItem.setIcon(R.drawable.ic_share_screen);
+        screenCaptureMenuItem.setTitle(R.string.share_screen);
     }
 
     @Override
