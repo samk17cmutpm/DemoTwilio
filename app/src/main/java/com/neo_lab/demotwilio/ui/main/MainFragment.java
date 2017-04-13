@@ -554,6 +554,7 @@ public class MainFragment extends Fragment implements MainContract.View {
                 .roomName(roomName)
                 .localMedia(localMedia)
                 .build();
+
         room = Video.connect(activity, connectOptions, roomListener());
         setDisconnectAction();
     }
@@ -932,7 +933,7 @@ public class MainFragment extends Fragment implements MainContract.View {
     private void startScreenCapture() {
         localMedia.removeVideoTrack(localVideoTrack);
         localVideoTrack = localMedia.addVideoTrack(true, screenCapturer);
-        localVideoTrack.removeRenderer(thumbnailVideoView);
+//        localVideoTrack.removeRenderer(thumbnailVideoView);
         localVideoTrack.addRenderer(thumbnailVideoView);
         screenCaptureMenuItem.setIcon(R.drawable.ic_stop_screen_share_white_24dp);
         screenCaptureMenuItem.setTitle(R.string.stop_screen_share);
