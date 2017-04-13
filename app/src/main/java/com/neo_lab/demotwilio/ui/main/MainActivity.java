@@ -1,5 +1,6 @@
 package com.neo_lab.demotwilio.ui.main;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -28,5 +29,10 @@ public class MainActivity extends AppCompatActivity {
 
         presenter = new MainPresenter(fragment);
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

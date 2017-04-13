@@ -305,6 +305,8 @@ public class MainFragment extends Fragment implements MainContract.View {
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+
+        Log.e(TAG, "cameraAndMicPermissionGranted");
         if (requestCode == CAMERA_MIC_PERMISSION_REQUEST_CODE) {
             boolean cameraAndMicPermissionGranted = true;
 
@@ -312,13 +314,16 @@ public class MainFragment extends Fragment implements MainContract.View {
                 cameraAndMicPermissionGranted &= grantResult == PackageManager.PERMISSION_GRANTED;
             }
 
-                if (cameraAndMicPermissionGranted) {
+            if (cameraAndMicPermissionGranted) {
+
                 createLocalMedia();
                 setAccessToken();
             } else {
                 Toast.makeText(activity,
                         R.string.permissions_needed,
                         Toast.LENGTH_LONG).show();
+
+
             }
         }
     }
@@ -401,9 +406,9 @@ public class MainFragment extends Fragment implements MainContract.View {
                     R.string.permissions_needed,
                     Toast.LENGTH_LONG).show();
         } else {
-            ActivityCompat.requestPermissions(
-                    activity,
-                    new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},
+
+            Log.e(TAG, "requestPermissionForCameraAndMicrophone");
+            requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},
                     CAMERA_MIC_PERMISSION_REQUEST_CODE);
         }
     }
