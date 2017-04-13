@@ -467,7 +467,6 @@ public class MainFragment extends Fragment implements MainContract.View {
          */
 
         if (localMedia != null && localVideoTrack != null) {
-            primaryVideoView = null;
             localMedia.removeVideoTrack(localVideoTrack);
             localVideoTrack = null;
             Log.e(TAG, "onPause");
@@ -677,8 +676,9 @@ public class MainFragment extends Fragment implements MainContract.View {
             thumbnailVideoView.setVisibility(View.GONE);
             localVideoTrack.addRenderer(primaryVideoView);
             localVideoView = primaryVideoView;
-            primaryVideoView.setMirror(cameraCapturer.getCameraSource() ==
-                    CameraCapturer.CameraSource.FRONT_CAMERA);
+            if (primaryVideoView != null)
+                primaryVideoView.setMirror(cameraCapturer.getCameraSource() ==
+                    CameraCapturer.CameraSource.BACK_CAMERA);
         }
     }
 

@@ -92,7 +92,7 @@
                     android:id="@+id/im_cancel_chatting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_cancel" />
+                    app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
             </LinearLayout>
 
 
