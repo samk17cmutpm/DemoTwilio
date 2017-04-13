@@ -20,6 +20,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +30,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,8 +41,17 @@ import com.neo_lab.demotwilio.R;
 import com.neo_lab.demotwilio.model.Token;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
 import com.neo_lab.demotwilio.ui.chatting.ChattingActivity;
+import com.neo_lab.demotwilio.ui.chatting.ChattingFragment;
 import com.neo_lab.demotwilio.utils.activity.ActivityUtils;
 import com.neo_lab.demotwilio.utils.toolbar.ToolbarUtils;
+import com.twilio.chat.CallbackListener;
+import com.twilio.chat.Channel;
+import com.twilio.chat.ChannelListener;
+import com.twilio.chat.ChatClient;
+import com.twilio.chat.ErrorInfo;
+import com.twilio.chat.Member;
+import com.twilio.chat.Message;
+import com.twilio.chat.StatusListener;
 import com.twilio.video.AudioTrack;
 import com.twilio.video.CameraCapturer;
 import com.twilio.video.ConnectOptions;
@@ -56,10 +69,12 @@ import com.twilio.video.VideoRenderer;
 import com.twilio.video.VideoTrack;
 import com.twilio.video.VideoView;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainFragment extends Fragment implements MainContract.View {
 
@@ -78,6 +93,25 @@ public class MainFragment extends Fragment implements MainContract.View {
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     @BindView(R.id.toolbar_title) TextView tvToolbarTitle;
+
+    @BindView(R.id.rl_video_calling) RelativeLayout rlVideoCalling;
+
+    @BindView(R.id.rl_chatting_calling) RelativeLayout rlChattingCalling;
+
+    @BindView(R.id.messagesRecyclerView) RecyclerView messagesRecyclerView;
+
+    private MessagesAdapter messagesAdapter;
+
+    @BindView(R.id.writeMessageEditText) EditText writeMessageEditText;
+
+    @BindView(R.id.sendChatMessageButton)
+    Button sendChatMessageButton;
+
+    private ArrayList<Message> messages;
+
+    private ChatClient chatClient;
+
+    private Channel channel;
 
     /*
      * Access token used to connect. This field will be set either from the console generated token
@@ -207,6 +241,13 @@ public class MainFragment extends Fragment implements MainContract.View {
 
         showUI();
 
+        // Get Device Id
+        String deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String userName = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.USER_NAME);
+
+        // Request Token From Server
+        presenter.requestToken(deviceId, userName);
+
         return root;
     }
 
@@ -214,6 +255,14 @@ public class MainFragment extends Fragment implements MainContract.View {
     public void setPresenter(MainContract.Presenter presenter) {
 
         this.presenter = presenter;
+
+    }
+
+    @OnClick(R.id.im_cancel_chatting)
+    public void cancelChatting() {
+
+        rlVideoCalling.setVisibility(View.VISIBLE);
+        rlChattingCalling.setVisibility(View.GONE);
 
     }
 
@@ -228,7 +277,10 @@ public class MainFragment extends Fragment implements MainContract.View {
             @Override
             public void onClick(View v) {
 
-                navigateToChattingRoom();
+//                navigateToChattingRoom();
+
+                rlVideoCalling.setVisibility(View.GONE);
+                rlChattingCalling.setVisibility(View.VISIBLE);
 
             }
         });
@@ -256,6 +308,47 @@ public class MainFragment extends Fragment implements MainContract.View {
          * Set the initial state of the UI
          */
         intializeUI();
+
+        messages = new ArrayList<>();
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
+        // for a chat app, show latest at the bottom
+        layoutManager.setStackFromEnd(true);
+
+        messagesRecyclerView.setLayoutManager(layoutManager);
+
+        messagesAdapter = new MessagesAdapter();
+        messagesRecyclerView.setAdapter(messagesAdapter);
+
+        sendChatMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (channel != null) {
+                    String messageBody = writeMessageEditText.getText().toString();
+                    Message message = channel.getMessages().createMessage(messageBody);
+                    Log.d(TAG,"Message created");
+                    channel.getMessages().sendMessage(message, new StatusListener() {
+                        @Override
+                        public void onSuccess() {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // need to modify user interface elements on the UI thread
+                                    writeMessageEditText.setText("");
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onError(ErrorInfo errorInfo) {
+                            Log.e(TAG,"Error sending message: " + errorInfo.getErrorText());
+                        }
+                    });
+                }
+            }
+        });
 
     }
 
@@ -299,6 +392,27 @@ public class MainFragment extends Fragment implements MainContract.View {
         tvToolbarTitle.setText(message);
         tvToolbarTitle.setTextColor(color);
 
+    }
+
+    @Override
+    public void onListenerRequestChattingToken(boolean status, String message, Token token) {
+        if (status) {
+            createChattingRom(token.getToken());
+        }
+
+    }
+
+    @Override
+    public void updateStatusRequestChattingToken(boolean status, String message) {
+
+    }
+
+    @Override
+    public void createChattingRom(String accessToken) {
+        ChatClient.Properties.Builder builder = new ChatClient.Properties.Builder();
+        builder.setSynchronizationStrategy(ChatClient.SynchronizationStrategy.ALL);
+        ChatClient.Properties props = builder.createProperties();
+        ChatClient.create(activity, accessToken, props, chatClientCallbackListener);
     }
 
     @Override
@@ -352,10 +466,11 @@ public class MainFragment extends Fragment implements MainContract.View {
          * that the track has been removed.
          */
 
-        Log.e(TAG, "onPause");
         if (localMedia != null && localVideoTrack != null) {
+            primaryVideoView = null;
             localMedia.removeVideoTrack(localVideoTrack);
             localVideoTrack = null;
+            Log.e(TAG, "onPause");
         }
         super.onPause();
     }
@@ -437,6 +552,7 @@ public class MainFragment extends Fragment implements MainContract.View {
     }
 
     private void connectToRoom(String roomName, String accessToken) {
+
         setAudioFocus(true);
         ConnectOptions connectOptions = new ConnectOptions.Builder(accessToken)
                 .roomName(roomName)
@@ -650,6 +766,7 @@ public class MainFragment extends Fragment implements MainContract.View {
 
             @Override
             public void onVideoTrackRemoved(Media media, VideoTrack videoTrack) {
+                Log.e(TAG, "onVideoTrackRemoved");
                 videoStatusTextView.setText("onVideoTrackRemoved");
                 removeParticipantVideo(videoTrack);
             }
@@ -867,4 +984,168 @@ public class MainFragment extends Fragment implements MainContract.View {
         }
         super.onDestroyView();
     }
+
+
+
+    private void loadChannels() {
+        final String nameRoomChat = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT);
+        chatClient.getChannels().getChannel(nameRoomChat, new CallbackListener<Channel>() {
+            @Override
+            public void onSuccess(Channel channel) {
+                if (channel != null) {
+                    joinChannel(channel);
+                } else {
+                    chatClient.getChannels().createChannel(nameRoomChat,
+                            Channel.ChannelType.PUBLIC, new CallbackListener<Channel>() {
+                                @Override
+                                public void onSuccess(Channel channel) {
+                                    if (channel != null) {
+                                        joinChannel(channel);
+                                    }
+                                }
+
+                                @Override
+                                public void onError(ErrorInfo errorInfo) {
+                                    Log.e(TAG,"Error creating channel: " + errorInfo.getErrorText());
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onError(ErrorInfo errorInfo) {
+                Log.e(TAG,"Error retrieving channel: " + errorInfo.getErrorText());
+            }
+
+        });
+
+    }
+
+    private void joinChannel(final Channel channel) {
+        Log.d(TAG, "Joining Channel: " + channel.getUniqueName());
+        channel.join(new StatusListener() {
+            @Override
+            public void onSuccess() {
+                MainFragment.this.channel = channel;
+                Log.d(TAG, "Joined default channel");
+                MainFragment.this.channel.addListener(defaultChannelListener);
+            }
+
+            @Override
+            public void onError(ErrorInfo errorInfo) {
+                Log.e(TAG,"Error joining channel: " + errorInfo.getErrorText());
+            }
+        });
+    }
+
+    private CallbackListener<ChatClient> chatClientCallbackListener =
+            new CallbackListener<ChatClient>() {
+                @Override
+                public void onSuccess(ChatClient chatClient) {
+                    MainFragment.this.chatClient = chatClient;
+                    loadChannels();
+                    Log.d(TAG, "Success creating Twilio Chat Client");
+                }
+
+                @Override
+                public void onError(ErrorInfo errorInfo) {
+                    Log.e(TAG,"Error creating Twilio Chat Client: " + errorInfo.getErrorText());
+                }
+            };
+
+    private ChannelListener defaultChannelListener = new ChannelListener() {
+        @Override
+        public void onMessageAdd(final Message message) {
+            Log.d(TAG, "Message added");
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // need to modify user interface elements on the UI thread
+                    messages.add(message);
+                    messagesAdapter.notifyDataSetChanged();
+                }
+            });
+
+        }
+
+        @Override
+        public void onMessageChange(Message message) {
+            Log.d(TAG, "Message changed: " + message.getMessageBody());
+        }
+
+        @Override
+        public void onMessageDelete(Message message) {
+            Log.d(TAG, "Message deleted");
+        }
+
+        @Override
+        public void onMemberJoin(Member member) {
+            Log.d(TAG, "Member joined: " + member.getUserInfo().getIdentity());
+        }
+
+        @Override
+        public void onMemberChange(Member member) {
+            Log.d(TAG, "Member changed: " + member.getUserInfo().getIdentity());
+        }
+
+        @Override
+        public void onMemberDelete(Member member) {
+            Log.d(TAG, "Member deleted: " + member.getUserInfo().getIdentity());
+        }
+
+        @Override
+        public void onTypingStarted(Member member) {
+            Log.d(TAG, "Started Typing: " + member.getUserInfo().getIdentity());
+        }
+
+        @Override
+        public void onTypingEnded(Member member) {
+            Log.d(TAG, "Ended Typing: " + member.getUserInfo().getIdentity());
+        }
+
+        @Override
+        public void onSynchronizationChange(Channel channel) {
+
+        }
+    };
+
+    class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+
+            public TextView messageTextView;
+
+            public ViewHolder(TextView textView) {
+                super(textView);
+                messageTextView = textView;
+            }
+        }
+
+        public MessagesAdapter() {
+
+        }
+
+        @Override
+        public MessagesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                              int viewType) {
+            TextView messageTextView = (TextView) LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.message_chatting_item, parent, false);
+            return new MessagesAdapter.ViewHolder(messageTextView);
+        }
+
+        @Override
+        public void onBindViewHolder(MessagesAdapter.ViewHolder holder, int position) {
+            Message message = messages.get(position);
+            String messageText = String.format("%s: %s", message.getAuthor(), message.getMessageBody());
+            holder.messageTextView.setText(messageText);
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return messages.size();
+        }
+    }
+
+
 }

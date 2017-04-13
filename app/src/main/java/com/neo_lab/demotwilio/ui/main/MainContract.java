@@ -23,11 +23,19 @@ public interface MainContract {
         void onListenerRequestVideoToken(boolean status, String message, Token token);
 
         void updateStatusRequestVideoToken(boolean status, String message);
+
+        void onListenerRequestChattingToken(boolean status, String message, Token token);
+
+        void updateStatusRequestChattingToken(boolean status, String message);
+
+        void createChattingRom(String accessToken);
     }
 
     interface Presenter extends BasePresenter {
 
         void requestTokenVideo(String deviceId, String userName);
+
+        void requestToken(String deviceId, String userName);
 
     }
 }

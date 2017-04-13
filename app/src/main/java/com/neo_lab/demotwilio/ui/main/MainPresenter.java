@@ -69,4 +69,33 @@ public class MainPresenter implements MainContract.Presenter {
 
 
     }
+
+    @Override
+    public void requestToken(String deviceId, String userName) {
+
+        Observable<Response<TokenServer>> observable =
+                service.getTokenChatting(deviceId, userName);
+
+        subscriptions.add(observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscriber<TokenServer>() {
+                    @Override
+                    public void handleViewOnRequestSuccess(TokenServer data) {
+                        view.onListenerRequestChattingToken(true, "Success", data);
+                    }
+
+                    @Override
+                    public void handleViewOnRequestError(APIError apiError) {
+                        view.onListenerRequestChattingToken(false, apiError.message(), null);
+
+                    }
+
+                    @Override
+                    public void handleViewOnConnectSeverError() {
+
+                    }
+                })
+        );
+
+    }
 }

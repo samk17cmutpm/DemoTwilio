@@ -6,5 +6,5 @@
 
     <dimen name="general_magrin">20dp</dimen>
 
-    <dimen name="toolbar_title">20dp</dimen>
+    <dimen name="toolbar_title">16dp</dimen>
 </resources>
