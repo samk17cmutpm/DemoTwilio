@@ -61,6 +61,14 @@
                     android:src="@drawable/ic_mic_green_24px"
                     app:fabSize="mini" />
 
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/exit_room_action_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/general_magrin"
+                    android:src="@drawable/ic_exit_room"
+                    app:fabSize="mini" />
+
 
             </LinearLayout>
 

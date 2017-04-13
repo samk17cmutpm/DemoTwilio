@@ -163,10 +163,11 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     private LocalVideoTrack localVideoTrack;
 
-//    @BindView(R.id.connect_action_fab) FloatingActionButton connectActionFab;
+    @BindView(R.id.exit_room_action_fab) FloatingActionButton exitRoomActionFab;
     @BindView(R.id.switch_camera_action_fab) FloatingActionButton switchCameraActionFab;
     @BindView(R.id.local_video_action_fab) FloatingActionButton localVideoActionFab;
     @BindView(R.id.mute_action_fab) FloatingActionButton muteActionFab;
+
     private android.support.v7.app.AlertDialog alertDialog;
     private AudioManager audioManager;
     private String participantIdentity;
@@ -571,6 +572,14 @@ public class MainFragment extends Fragment implements MainContract.View {
         localVideoActionFab.setOnClickListener(localVideoClickListener());
         muteActionFab.show();
         muteActionFab.setOnClickListener(muteClickListener());
+
+        exitRoomActionFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.onBackPressed();
+                activity.finish();
+            }
+        });
     }
 
     /*
