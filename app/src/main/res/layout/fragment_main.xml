@@ -110,25 +110,25 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimaryDark"
                 android:orientation="horizontal"
-                android:paddingBottom="@dimen/general_magrin"
-                android:paddingLeft="@dimen/general_magrin"
-                android:paddingRight="@dimen/general_magrin"
-                android:paddingTop="@dimen/general_magrin">
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:weightSum="1">
 
                 <EditText
                     android:id="@+id/writeMessageEditText"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/general_magrin"
-                    android:layout_weight="9.53"
+                    android:layout_weight="0.15"
                     android:textColor="@color/colorAccent" />
 
                 <Button
                     android:id="@+id/sendChatMessageButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/send" />
+                    android:layout_weight="0.85"
+                    android:drawableStart="@drawable/ic_send" />
             </LinearLayout>
 
 

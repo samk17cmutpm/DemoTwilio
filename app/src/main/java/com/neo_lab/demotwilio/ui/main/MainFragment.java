@@ -276,12 +276,8 @@ public class MainFragment extends Fragment implements MainContract.View {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                navigateToChattingRoom();
-
                 rlVideoCalling.setVisibility(View.GONE);
                 rlChattingCalling.setVisibility(View.VISIBLE);
-
             }
         });
 
@@ -934,12 +930,6 @@ public class MainFragment extends Fragment implements MainContract.View {
     }
 
     private void stopScreenCapture() {
-//        localVideoTrack.removeRenderer(thumbnailVideoView);
-//        localVideoTrack = localMedia.addVideoTrack(true, cameraCapturer);
-//        localVideoTrack.addRenderer(thumbnailVideoView);
-//
-//        localVideoTrack = localMedia.addVideoTrack(true, cameraCapturer);
-//        localVideoTrack.addRenderer(localVideoView);
         localVideoTrack.removeRenderer(thumbnailVideoView);
         localMedia.removeVideoTrack(localVideoTrack);
 
