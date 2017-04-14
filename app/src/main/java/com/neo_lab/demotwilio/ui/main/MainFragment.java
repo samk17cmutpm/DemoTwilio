@@ -42,6 +42,7 @@ import com.neo_lab.demotwilio.model.Token;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
 import com.neo_lab.demotwilio.ui.chatting.ChattingActivity;
 import com.neo_lab.demotwilio.ui.chatting.ChattingFragment;
+import com.neo_lab.demotwilio.ui.recording_screen.RecordingScreenActivity;
 import com.neo_lab.demotwilio.utils.activity.ActivityUtils;
 import com.neo_lab.demotwilio.utils.toolbar.ToolbarUtils;
 import com.twilio.chat.CallbackListener;
@@ -215,8 +216,9 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.action_record_screen:
-//                return true;
+            case R.id.action_record_screen:
+                ActivityUtils.startActivity(activity, RecordingScreenActivity.class, true);
+                return true;
             case R.id.action_share_screen:
                 String shareScreen = getString(R.string.share_screen);
 
@@ -244,11 +246,9 @@ public class MainFragment extends Fragment implements MainContract.View {
 
         ButterKnife.bind(this, root);
 
-        showUI();
 
-        // Get Device Id
-        deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
-        userName = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.USER_NAME);
+
+        showUI();
 
         // Request Token From Server
         presenter.requestToken(deviceId, userName);
@@ -275,6 +275,10 @@ public class MainFragment extends Fragment implements MainContract.View {
     public void showUI() {
 
         activity = getActivity();
+
+        // Get Device Id
+        deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
+        userName = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.USER_NAME);
 
         ToolbarUtils.initialize(toolbar, activity, R.string.app_name, R.drawable.ic_message);
 
