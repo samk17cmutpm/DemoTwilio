@@ -6,4 +6,26 @@
     android:layout_height="match_parent"
     tools:context="com.neo_lab.demotwilio.ui.recording_screen.RecordingScreenActivity">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Recording Status: "
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        tools:layout_editor_absoluteY="179dp"
+        tools:layout_editor_absoluteX="103dp" />
+
+    <ToggleButton
+        android:id="@+id/toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:text="Start"
+        tools:layout_editor_absoluteY="269dp"
+        tools:layout_editor_absoluteX="148dp" />
+
+
 </android.support.constraint.ConstraintLayout>

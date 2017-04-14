@@ -69,6 +69,15 @@
                     android:src="@drawable/ic_exit_room"
                     app:fabSize="mini" />
 
+                <ToggleButton
+                    android:id="@+id/toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView"
+                    android:layout_centerHorizontal="true"
+                    android:text="Start"
+                    tools:layout_editor_absoluteY="269dp"
+                    tools:layout_editor_absoluteX="148dp" />
 
             </LinearLayout>
 

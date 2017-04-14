@@ -7,10 +7,10 @@
         app:showAsAction="ifRoom"
         android:title="Share screen">
     </item>
-    <!--<item-->
-        <!--android:id="@+id/action_record_screen"-->
-        <!--android:icon="@drawable/ic_record_screen"-->
-        <!--app:showAsAction="ifRoom"-->
-        <!--android:title="Record Screen">-->
-    <!--</item>-->
+    <item
+        android:id="@+id/action_record_screen"
+        android:icon="@drawable/ic_record_screen"
+        app:showAsAction="ifRoom"
+        android:title="Record Screen">
+    </item>
 </menu>
