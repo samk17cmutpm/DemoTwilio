@@ -176,6 +176,10 @@ public class MainFragment extends Fragment implements MainContract.View {
     private VideoRenderer localVideoView;
     private boolean disconnectedFromOnDestroy;
 
+    private String deviceId;
+
+    private String userName;
+
     public MainFragment() {
         // Required empty public constructor
     }
@@ -243,8 +247,8 @@ public class MainFragment extends Fragment implements MainContract.View {
         showUI();
 
         // Get Device Id
-        String deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
-        String userName = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.USER_NAME);
+        deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
+        userName = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.USER_NAME);
 
         // Request Token From Server
         presenter.requestToken(deviceId, userName);
@@ -539,11 +543,6 @@ public class MainFragment extends Fragment implements MainContract.View {
     }
 
     private void setAccessToken() {
-        // Get Device Id
-        String deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        String userName = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.USER_NAME);
-
         presenter.requestTokenVideo(deviceId, userName);
     }
 
