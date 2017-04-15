@@ -625,7 +625,7 @@ public class MainFragment extends Fragment implements MainContract.View {
         } else {
 
             Log.e(TAG, "requestPermissionForCameraAndMicrophone");
-            requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},
+            requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     CAMERA_MIC_PERMISSION_REQUEST_CODE);
         }
     }

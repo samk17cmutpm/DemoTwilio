@@ -14,7 +14,9 @@ import android.widget.EditText;
 
 import com.neo_lab.demotwilio.R;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
+import com.neo_lab.demotwilio.ui.connecting_room.ConnectingRoomActivity;
 import com.neo_lab.demotwilio.ui.main.MainActivity;
+import com.neo_lab.demotwilio.ui.recording_screen.RecordingScreenActivity;
 import com.neo_lab.demotwilio.utils.activity.ActivityUtils;
 import com.neo_lab.demotwilio.utils.toolbar.ToolbarUtils;
 

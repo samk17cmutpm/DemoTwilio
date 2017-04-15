@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".DemoTwilioApplication"
@@ -27,6 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".ui.create_new_room.CreateNewRoomActivity">
+
             <intent-filter>
                 <action android:name="WelcomeActivity" />
                 <action android:name="android.intent.action.MAIN" />
@@ -34,10 +35,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity android:name=".ui.main.MainActivity" />
         <activity android:name=".ui.chatting.ChattingActivity" />
-        <activity android:name=".ui.recording_screen.RecordingScreenActivity"></activity>
+        <activity android:name=".ui.recording_screen.RecordingScreenActivity" />
+        <activity android:name=".ui.connecting_room.ConnectingRoomActivity">
+
+        </activity>
     </application>
 
 </manifest>
