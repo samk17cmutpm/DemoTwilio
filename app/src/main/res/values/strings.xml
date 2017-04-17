@@ -12,6 +12,8 @@
 
     <string name="label_permissions">Please enable Microphone and Storage permissions.</string>
 
+    <string name="only_available_on_android_M_up">This feature only available on android version higher than android M</string>
+
     <!-- Screen New Room Name -->
     <string name="name_room_hint">Enter the room name</string>
     <string name="user_name_hint">Enter the user name</string>

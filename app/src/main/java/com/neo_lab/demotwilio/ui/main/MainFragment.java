@@ -50,10 +50,6 @@ import com.google.gson.JsonObject;
 import com.neo_lab.demotwilio.R;
 import com.neo_lab.demotwilio.model.Token;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
-import com.neo_lab.demotwilio.ui.chatting.ChattingActivity;
-import com.neo_lab.demotwilio.ui.chatting.ChattingFragment;
-import com.neo_lab.demotwilio.ui.recording_screen.RecordingScreenActivity;
-import com.neo_lab.demotwilio.utils.activity.ActivityUtils;
 import com.neo_lab.demotwilio.utils.toolbar.ToolbarUtils;
 import com.twilio.chat.CallbackListener;
 import com.twilio.chat.Channel;
@@ -94,7 +90,7 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     private static final int REQUEST_MEDIA_PROJECTION = 100;
 
-    private static final String TAG = "VideoActivity";
+    private static final String TAG = "MainFragment";
 
     private MainContract.Presenter presenter;
 
@@ -116,8 +112,7 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     @BindView(R.id.writeMessageEditText) EditText writeMessageEditText;
 
-    @BindView(R.id.sendChatMessageButton)
-    Button sendChatMessageButton;
+    @BindView(R.id.sendChatMessageButton) Button sendChatMessageButton;
 
     private ArrayList<Message> messages;
 
@@ -176,40 +171,28 @@ public class MainFragment extends Fragment implements MainContract.View {
     private LocalVideoTrack localVideoTrack;
 
     @BindView(R.id.exit_room_action_fab) FloatingActionButton exitRoomActionFab;
+
     @BindView(R.id.switch_camera_action_fab) FloatingActionButton switchCameraActionFab;
+
     @BindView(R.id.local_video_action_fab) FloatingActionButton localVideoActionFab;
+
     @BindView(R.id.mute_action_fab) FloatingActionButton muteActionFab;
 
     private android.support.v7.app.AlertDialog alertDialog;
+
     private AudioManager audioManager;
+
     private String participantIdentity;
 
     private int previousAudioMode;
+
     private VideoRenderer localVideoView;
+
     private boolean disconnectedFromOnDestroy;
 
     private String deviceId;
 
     private String userName;
-
-    private static final int REQUEST_CODE = 1000;
-    private int mScreenDensity;
-    private MediaProjectionManager mProjectionManager;
-    private static final int DISPLAY_WIDTH = 720;
-    private static final int DISPLAY_HEIGHT = 1280;
-    private MediaProjection mMediaProjection;
-    private VirtualDisplay mVirtualDisplay;
-    private MediaProjectionCallback mMediaProjectionCallback;
-    @BindView(R.id.toggle) ToggleButton mToggleButton;
-    private MediaRecorder mMediaRecorder;
-    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-    private static final int REQUEST_PERMISSIONS = 10;
-    static {
-        ORIENTATIONS.append(Surface.ROTATION_0, 90);
-        ORIENTATIONS.append(Surface.ROTATION_90, 0);
-        ORIENTATIONS.append(Surface.ROTATION_180, 270);
-        ORIENTATIONS.append(Surface.ROTATION_270, 180);
-    }
 
 
     public MainFragment() {
@@ -247,21 +230,26 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_record_screen:
-                ActivityUtils.startActivity(activity, RecordingScreenActivity.class, true);
-                return true;
             case R.id.action_share_screen:
-                String shareScreen = getString(R.string.share_screen);
 
-                if (item.getTitle().equals(shareScreen)) {
-                    if (screenCapturer == null) {
-                        requestScreenCapturePermission();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                    String shareScreen = getString(R.string.share_screen);
+
+                    if (item.getTitle().equals(shareScreen)) {
+                        if (screenCapturer == null) {
+                            requestScreenCapturePermission();
+                        } else {
+                            startScreenCapture();
+                        }
                     } else {
-                        startScreenCapture();
+                        stopScreenCapture();
                     }
+
                 } else {
-                    stopScreenCapture();
+                    Toast.makeText(activity, R.string.only_available_on_android_M_up, Toast.LENGTH_LONG).show();
                 }
+
 
                 return true;
         }
@@ -286,8 +274,6 @@ public class MainFragment extends Fragment implements MainContract.View {
         initializeChattingRoom();
 
         initializeCaptureScreen();
-
-        initializeRecordVideo();
 
         // Request Token From Server
         presenter.requestToken(deviceId, userName);
@@ -416,62 +402,6 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     }
 
-    @Override
-    public void initializeRecordVideo() {
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        mScreenDensity = metrics.densityDpi;
-
-        mMediaRecorder = new MediaRecorder();
-
-        mProjectionManager = (MediaProjectionManager) activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-
-        mToggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-                    Log.e(TAG, "WRITE_EXTERNAL_STORAGE NOT GRANTED");
-
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                        mToggleButton.setChecked(false);
-                        Snackbar.make(toolbar, R.string.label_permissions, Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        ActivityCompat.requestPermissions(activity,
-                                                new String[]{Manifest.permission
-                                                        .WRITE_EXTERNAL_STORAGE},
-                                                REQUEST_PERMISSIONS);
-                                    }
-                                }).show();
-                    } else {
-                        Log.e(TAG, "REQUEST WRITE_EXTERNAL_STORAGE");
-
-                        ActivityCompat.requestPermissions(activity,
-                                new String[]{Manifest.permission
-                                        .WRITE_EXTERNAL_STORAGE},
-                                REQUEST_PERMISSIONS);
-                    }
-                } else {
-                    onToggleScreenShare(v);
-                }
-            }
-        });
-
-
-    }
-
-    @Override
-    public void initializeCamera() {
-
-    }
-
-    @Override
-    public void navigateToChattingRoom() {
-        ActivityUtils.startActivity(activity, ChattingActivity.class);
-    }
 
     @Override
     public void onListenerRequestVideoToken(boolean status, String message, Token token) {
@@ -547,28 +477,7 @@ public class MainFragment extends Fragment implements MainContract.View {
 
                 }
                 break;
-            case REQUEST_PERMISSIONS:
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    Log.e(TAG, "WRITE_EXTERNAL_STORAGE onRequestPermissionsResult");
-                    onToggleScreenShare(mToggleButton);
-                } else {
-                    mToggleButton.setChecked(false);
-                    Snackbar.make(rlVideoCalling, R.string.label_permissions,
-                            Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
-                            new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent();
-                                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                    intent.addCategory(Intent.CATEGORY_DEFAULT);
-                                    intent.setData(Uri.parse("package:" + activity.getPackageName()));
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                                    startActivity(intent);
-                                }
-                            }).show();
-                }
+            default:
                 break;
 
         }
@@ -633,7 +542,6 @@ public class MainFragment extends Fragment implements MainContract.View {
             localMedia.release();
             localMedia = null;
         }
-        destroyMediaProjection();
         super.onDestroy();
     }
 
@@ -686,17 +594,12 @@ public class MainFragment extends Fragment implements MainContract.View {
                 .build();
 
         room = Video.connect(activity, connectOptions, roomListener());
-        setDisconnectAction();
     }
 
     /*
      * The initial state when there is no active conversation.
      */
     private void intializeUI() {
-//        connectActionFab.setImageDrawable(ContextCompat.getDrawable(activity,
-//                R.drawable.ic_call_white_24px));
-//        connectActionFab.hide();
-//        connectActionFab.setOnClickListener(connectActionClickListener());
         switchCameraActionFab.show();
         switchCameraActionFab.setOnClickListener(switchCameraClickListener());
         localVideoActionFab.show();
@@ -711,16 +614,6 @@ public class MainFragment extends Fragment implements MainContract.View {
                 activity.finish();
             }
         });
-    }
-
-    /*
-     * The actions performed during disconnect.
-     */
-    private void setDisconnectAction() {
-//        connectActionFab.setImageDrawable(ContextCompat.getDrawable(activity,
-//                R.drawable.ic_call_end_white_24px));
-//        connectActionFab.show();
-//        connectActionFab.setOnClickListener(disconnectClickListener());
     }
 
     /*
@@ -1094,12 +987,7 @@ public class MainFragment extends Fragment implements MainContract.View {
                 screenCapturer = new ScreenCapturer(activity, resultCode, data, screenCapturerListener);
                 startScreenCapture();
                 break;
-            case REQUEST_CODE:
-                mMediaProjectionCallback = new MediaProjectionCallback();
-                mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-                mMediaProjection.registerCallback(mMediaProjectionCallback, null);
-                mVirtualDisplay = createVirtualDisplay();
-                mMediaRecorder.start();
+            default:
                 break;
         }
     }
@@ -1286,88 +1174,6 @@ public class MainFragment extends Fragment implements MainContract.View {
         }
     }
 
-    public void onToggleScreenShare(View view) {
-        if (((ToggleButton) view).isChecked()) {
-            initRecorder();
-            shareScreen();
-        } else {
-            mMediaRecorder.stop();
-            mMediaRecorder.reset();
-            Log.v(TAG, "Stopping Recording");
-            stopScreenSharing();
-        }
-    }
-
-    private void shareScreen() {
-        if (mMediaProjection == null) {
-            startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
-            return;
-        }
-        mVirtualDisplay = createVirtualDisplay();
-        mMediaRecorder.start();
-    }
-
-    private VirtualDisplay createVirtualDisplay() {
-        return mMediaProjection.createVirtualDisplay("MainActivity",
-                DISPLAY_WIDTH, DISPLAY_HEIGHT, mScreenDensity,
-                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                mMediaRecorder.getSurface(), null /*Callbacks*/, null
-                /*Handler*/);
-    }
-
-    private void initRecorder() {
-        try {
-            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mMediaRecorder.setOutputFile(Environment
-                    .getExternalStoragePublicDirectory(Environment
-                            .DIRECTORY_DOWNLOADS) + "/video.mp4");
-            mMediaRecorder.setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-            mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mMediaRecorder.setVideoEncodingBitRate(512 * 1000);
-            mMediaRecorder.setVideoFrameRate(30);
-            int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
-            int orientation = ORIENTATIONS.get(rotation + 90);
-            mMediaRecorder.setOrientationHint(orientation);
-            mMediaRecorder.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private class MediaProjectionCallback extends MediaProjection.Callback {
-        @Override
-        public void onStop() {
-            if (mToggleButton.isChecked()) {
-                mToggleButton.setChecked(false);
-                mMediaRecorder.stop();
-                mMediaRecorder.reset();
-                Log.v(TAG, "Recording Stopped");
-            }
-            mMediaProjection = null;
-            stopScreenSharing();
-        }
-    }
-
-    private void stopScreenSharing() {
-        if (mVirtualDisplay == null) {
-            return;
-        }
-        mVirtualDisplay.release();
-        //mMediaRecorder.release(); //If used: mMediaRecorder object cannot
-        // be reused again
-        destroyMediaProjection();
-    }
-    private void destroyMediaProjection() {
-        if (mMediaProjection != null) {
-            mMediaProjection.unregisterCallback(mMediaProjectionCallback);
-            mMediaProjection.stop();
-            mMediaProjection = null;
-        }
-        Log.i(TAG, "MediaProjection Stopped");
-    }
 
 
 }

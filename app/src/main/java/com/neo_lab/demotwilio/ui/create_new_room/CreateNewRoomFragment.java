@@ -2,6 +2,7 @@ package com.neo_lab.demotwilio.ui.create_new_room;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 
 import com.neo_lab.demotwilio.R;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
+import com.neo_lab.demotwilio.ui.base.BaseKey;
 import com.neo_lab.demotwilio.ui.connecting_room.ConnectingRoomActivity;
 import com.neo_lab.demotwilio.ui.main.MainActivity;
 import com.neo_lab.demotwilio.ui.recording_screen.RecordingScreenActivity;
@@ -134,7 +136,11 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
 
     @Override
     public void navigateToMainActivity() {
-        ActivityUtils.startActivity(activity, MainActivity.class);
+//        ActivityUtils.startActivity(activity, MainActivity.class);
+
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.putExtra(String.valueOf(BaseKey.IS_RECONNECT_TO_RECORD_VIDEO), false);
+        startActivity(intent);
     }
 
     @Override

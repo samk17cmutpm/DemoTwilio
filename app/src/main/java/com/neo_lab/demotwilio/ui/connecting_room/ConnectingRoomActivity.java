@@ -875,8 +875,6 @@ public class ConnectingRoomActivity extends AppCompatActivity implements Connect
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_record_screen:
-                return true;
             case R.id.action_share_screen:
 
                 String shareScreen = getString(R.string.share_screen);
