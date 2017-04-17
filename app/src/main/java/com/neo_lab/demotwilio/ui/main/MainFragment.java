@@ -7,19 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.hardware.display.DisplayManager;
-import android.hardware.display.VirtualDisplay;
 import android.media.AudioManager;
-import android.media.MediaRecorder;
-import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -29,14 +22,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -44,9 +34,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.google.gson.JsonObject;
 import com.neo_lab.demotwilio.R;
 import com.neo_lab.demotwilio.model.Token;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
@@ -76,7 +64,8 @@ import com.twilio.video.VideoRenderer;
 import com.twilio.video.VideoTrack;
 import com.twilio.video.VideoView;
 
-import java.io.IOException;
+import org.webrtc.ScreenCapturerAndroid;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -86,7 +75,7 @@ import butterknife.OnClick;
 
 public class MainFragment extends Fragment implements MainContract.View {
 
-    private static final int CAMERA_MIC_PERMISSION_REQUEST_CODE = 1;
+    private static final int CAMERA_MIC_WRITE_EXTERNAL_PERMISSION_REQUEST_CODE = 1;
 
     private static final int REQUEST_MEDIA_PROJECTION = 100;
 
@@ -119,12 +108,6 @@ public class MainFragment extends Fragment implements MainContract.View {
     private ChatClient chatClient;
 
     private Channel channel;
-
-    /*
-     * Access token used to connect. This field will be set either from the console generated token
-     * or the request to the token server.
-     */
-    private String accessToken;
 
     /*
      * A Room represents communication between a local participant and one or more participants.
@@ -273,8 +256,6 @@ public class MainFragment extends Fragment implements MainContract.View {
 
         initializeChattingRoom();
 
-        initializeCaptureScreen();
-
         // Request Token From Server
         presenter.requestToken(deviceId, userName);
 
@@ -322,6 +303,39 @@ public class MainFragment extends Fragment implements MainContract.View {
     }
 
     @Override
+    public void requestPermission() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.CAMERA) ||
+                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.RECORD_AUDIO) ||
+                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+            Toast.makeText(activity, R.string.permissions_needed, Toast.LENGTH_LONG).show();
+
+        } else {
+
+            Log.e(TAG, "requestPermissionForCameraAndMicrophone");
+            requestPermissions(new String[] {
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.RECORD_AUDIO,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, CAMERA_MIC_WRITE_EXTERNAL_PERMISSION_REQUEST_CODE);
+        }
+
+    }
+
+    @Override
+    public boolean isPermissionsGranted() {
+
+        int resultCamera = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
+        int resultMic = ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO);
+        int resultWriteExternal = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return  resultCamera == PackageManager.PERMISSION_GRANTED &&
+                resultMic == PackageManager.PERMISSION_GRANTED &&
+                resultWriteExternal == PackageManager.PERMISSION_GRANTED;
+
+    }
+
+    @Override
     public void initializeVideoRoom() {
 
         /*
@@ -337,16 +351,16 @@ public class MainFragment extends Fragment implements MainContract.View {
         /*
          * Check camera and microphone permissions. Needed in Android M.
          */
-        if (!checkPermissionForCameraAndMicrophone()) {
-            requestPermissionForCameraAndMicrophone();
+        if (!isPermissionsGranted()) {
+            requestPermission();
         } else {
             createLocalMedia();
-            setAccessToken();
+            presenter.requestTokenVideo(deviceId, userName);
         }
         /*
          * Set the initial state of the UI
          */
-        intializeUI();
+        intializeVideoRoomActionUI();
 
     }
 
@@ -396,12 +410,6 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     }
 
-    @Override
-    public void initializeCaptureScreen() {
-
-
-    }
-
 
     @Override
     public void onListenerRequestVideoToken(boolean status, String message, Token token) {
@@ -410,7 +418,7 @@ public class MainFragment extends Fragment implements MainContract.View {
 
         if (status) {
             String nameRoom = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT);
-            connectToRoom(nameRoom, token.getToken());
+            connectToVideoRoom(nameRoom, token.getToken());
         }
 
     }
@@ -452,13 +460,13 @@ public class MainFragment extends Fragment implements MainContract.View {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         Log.e(TAG, "cameraAndMicPermissionGranted");
+
         switch (requestCode) {
-            case CAMERA_MIC_PERMISSION_REQUEST_CODE:
+            case CAMERA_MIC_WRITE_EXTERNAL_PERMISSION_REQUEST_CODE:
+
                 boolean cameraAndMicPermissionGranted = true;
 
                 for (int grantResult : grantResults) {
@@ -468,7 +476,7 @@ public class MainFragment extends Fragment implements MainContract.View {
                 if (cameraAndMicPermissionGranted) {
 
                     createLocalMedia();
-                    setAccessToken();
+                    presenter.requestTokenVideo(deviceId, userName);
                 } else {
                     Toast.makeText(activity,
                             R.string.permissions_needed,
@@ -545,27 +553,6 @@ public class MainFragment extends Fragment implements MainContract.View {
         super.onDestroy();
     }
 
-    private boolean checkPermissionForCameraAndMicrophone(){
-        int resultCamera = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
-        int resultMic = ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO);
-        return resultCamera == PackageManager.PERMISSION_GRANTED &&
-                resultMic == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermissionForCameraAndMicrophone(){
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.CAMERA) ||
-                ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                        Manifest.permission.RECORD_AUDIO)) {
-            Toast.makeText(activity,
-                    R.string.permissions_needed,
-                    Toast.LENGTH_LONG).show();
-        } else {
-
-            Log.e(TAG, "requestPermissionForCameraAndMicrophone");
-            requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    CAMERA_MIC_PERMISSION_REQUEST_CODE);
-        }
-    }
 
     private void createLocalMedia() {
         localMedia = LocalMedia.create(activity);
@@ -581,11 +568,8 @@ public class MainFragment extends Fragment implements MainContract.View {
         localVideoView = primaryVideoView;
     }
 
-    private void setAccessToken() {
-        presenter.requestTokenVideo(deviceId, userName);
-    }
 
-    private void connectToRoom(String roomName, String accessToken) {
+    private void connectToVideoRoom(String roomName, String accessToken) {
 
         setAudioFocus(true);
         ConnectOptions connectOptions = new ConnectOptions.Builder(accessToken)
@@ -599,7 +583,8 @@ public class MainFragment extends Fragment implements MainContract.View {
     /*
      * The initial state when there is no active conversation.
      */
-    private void intializeUI() {
+    private void intializeVideoRoomActionUI() {
+
         switchCameraActionFab.show();
         switchCameraActionFab.setOnClickListener(switchCameraClickListener());
         localVideoActionFab.show();
@@ -614,16 +599,6 @@ public class MainFragment extends Fragment implements MainContract.View {
                 activity.finish();
             }
         });
-    }
-
-    /*
-     * Creates an connect UI dialog
-     */
-    private void showConnectDialog() {
-        EditText roomEditText = new EditText(activity);
-        alertDialog = Dialog.createConnectDialog(roomEditText,
-                connectClickListener(roomEditText), cancelConnectDialogClickListener(), activity);
-        alertDialog.show();
     }
 
     /*
@@ -738,7 +713,7 @@ public class MainFragment extends Fragment implements MainContract.View {
                 // Only reinitialize the UI if disconnect was not called from onDestroy()
                 if (!disconnectedFromOnDestroy) {
                     setAudioFocus(false);
-                    intializeUI();
+                    intializeVideoRoomActionUI();
                     moveLocalVideoToPrimaryView();
                 }
             }
@@ -822,52 +797,9 @@ public class MainFragment extends Fragment implements MainContract.View {
         };
     }
 
-    private DialogInterface.OnClickListener connectClickListener(final EditText roomEditText) {
-        return new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                /*
-                 * Connect to room
-                 */
-//                connectToRoom(roomEditText.getText().toString());
-            }
-        };
-    }
 
-    private View.OnClickListener disconnectClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*
-                 * Disconnect from room
-                 */
-                if (room != null) {
-                    room.disconnect();
-                }
-                intializeUI();
-            }
-        };
-    }
 
-    private View.OnClickListener connectActionClickListener() {
-        return new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                showConnectDialog();
-            }
-        };
-    }
-
-    private DialogInterface.OnClickListener cancelConnectDialogClickListener() {
-        return new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                intializeUI();
-                alertDialog.dismiss();
-            }
-        };
-    }
 
     private View.OnClickListener switchCameraClickListener() {
         return new View.OnClickListener() {
@@ -955,6 +887,7 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     private void startScreenCapture() {
         localMedia.removeVideoTrack(localVideoTrack);
+
         localVideoTrack = localMedia.addVideoTrack(true, screenCapturer);
 //        localVideoTrack.removeRenderer(thumbnailVideoView);
         localVideoTrack.addRenderer(thumbnailVideoView);
@@ -965,7 +898,6 @@ public class MainFragment extends Fragment implements MainContract.View {
     private void stopScreenCapture() {
         localVideoTrack.removeRenderer(thumbnailVideoView);
         localMedia.removeVideoTrack(localVideoTrack);
-
 
         localVideoTrack = localMedia.addVideoTrack(true, cameraCapturer);
         localVideoTrack.addRenderer(localVideoView);

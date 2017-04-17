@@ -12,19 +12,21 @@ public interface MainContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showUI();
+
 
         void getProperties();
+
+        void showUI();
+
+        boolean isPermissionsGranted();
+
+        void requestPermission();
 
         // First Step
         void initializeVideoRoom();
 
         // Second Step
         void initializeChattingRoom();
-
-        // Third Step
-        void initializeCaptureScreen();
-
 
         void onListenerRequestVideoToken(boolean status, String message, Token token);
 
