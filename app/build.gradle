@@ -68,4 +68,6 @@ dependencies {
     // Twilio Chat Android
     compile "com.twilio:chat-android:0.12.1"
     compile "com.twilio:video-android:1.0.0-beta15"
+
+    compile 'com.afollestad.material-dialogs:commons:0.9.4.3'
 }
