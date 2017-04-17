@@ -200,7 +200,7 @@ public class ClientCallActivity extends AppCompatActivity implements ClientCallC
     @Override
     public void showUI() {
 
-        ToolbarUtils.initialize(toolbar, this, R.string.app_name, R.drawable.ic_arrow_back_white_24dp);
+        ToolbarUtils.initialize(toolbar, this, R.string.client_call, R.drawable.ic_arrow_back_white_24dp);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -341,38 +341,7 @@ public class ClientCallActivity extends AppCompatActivity implements ClientCallC
      * Request a Capability Token from your public accessible server
      */
     private void retrieveCapabilityToken(final ClientProfile newClientProfile) {
-
-        // Correlate desired properties of the Device (from ClientProfile) to properties of the Capability Token
-//        Uri.Builder b = Uri.parse(TOKEN_SERVICE_URL).buildUpon();
-//        if (newClientProfile.isAllowOutgoing()) {
-//            b.appendQueryParameter("allowOutgoing", newClientProfile.allowOutgoing ? "true" : "false");
-//        }
-//        if (newClientProfile.isAllowIncoming() && newClientProfile.getName() != null) {
-//            b.appendQueryParameter("client", newClientProfile.getName());
-//        }
-
         presenter.requestTokenClientCall(newClientProfile);
-
-//        Ion.with(getApplicationContext())
-//                .load(b.toString())
-//                .asString()
-//                .setCallback(new FutureCallback<String>() {
-//                    @Override
-//                    public void onCompleted(Exception e, String capabilityToken) {
-//                        if (e == null) {
-//                            Log.d(TAG, capabilityToken);
-//
-//                            // Update the current Client Profile to represent current properties
-//                            ClientCallActivity.this.clientProfile = newClientProfile;
-//
-//                            // Create a Device with the Capability Token
-//                            createDevice(capabilityToken);
-//                        } else {
-//                            Log.e(TAG, "Error retrieving token: " + e.toString());
-//                            Toast.makeText(ClientCallActivity.this, "Error retrieving token", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
     }
 
     /*

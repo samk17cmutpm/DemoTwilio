@@ -18,10 +18,13 @@
 
     <!-- Screen New Room Name -->
     <string name="name_room_hint">Enter the room name</string>
+
     <string name="user_name_hint">Enter the user name</string>
+
     <string name="connect_room">Connect</string>
 
     <string name="share_screen">Share screen</string>
+
     <string name="stop_screen_share">Stop screen share</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -34,6 +37,8 @@
     <string name="permissions_needed">Camera and Microphone permissions needed. Please allow in App Settings for additional functionality.</string>
 
     <string name="welcome">Welcome to Twilio Client</string>
+
+    <string name="client_call">Client Call</string>
 
     <string name="client_name">client name</string>
     <string name="phone_number">phone number</string>
