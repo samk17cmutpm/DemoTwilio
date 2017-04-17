@@ -38,6 +38,8 @@ import android.widget.Toast;
 import com.neo_lab.demotwilio.R;
 import com.neo_lab.demotwilio.model.Token;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
+import com.neo_lab.demotwilio.ui.client_call.ClientCallActivity;
+import com.neo_lab.demotwilio.utils.activity.ActivityUtils;
 import com.neo_lab.demotwilio.utils.toolbar.ToolbarUtils;
 import com.twilio.chat.CallbackListener;
 import com.twilio.chat.Channel;
@@ -213,6 +215,9 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_client_call:
+                ActivityUtils.startActivity(activity, ClientCallActivity.class, true);
+                return true;
             case R.id.action_share_screen:
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

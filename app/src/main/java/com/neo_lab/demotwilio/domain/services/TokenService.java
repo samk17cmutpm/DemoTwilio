@@ -6,6 +6,7 @@ import com.neo_lab.demotwilio.domain.response.TokenServer;
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -19,5 +20,8 @@ public interface TokenService {
 
     @GET("tokenVideo")
     Observable<Response<TokenServer>> getTokenVideo(@Query("device") String deviceId, @Query("username") String userName);
+
+    @GET
+    Observable<Response<TokenServer>> getTokenClientCall(@Url String url);
 
 }

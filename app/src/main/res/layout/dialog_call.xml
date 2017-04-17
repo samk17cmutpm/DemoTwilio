@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/typeSpinner"
+        android:layout_marginLeft="@dimen/general_magrin"
+        android:layout_marginTop="@dimen/general_magrin"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/client_name"
+        android:layout_marginRight="@dimen/general_magrin"
+        android:layout_marginLeft="@dimen/general_magrin"
+        android:layout_marginBottom="@dimen/general_magrin"
+        android:layout_marginTop="@dimen/general_magrin"
+        android:id="@+id/contact"/>
+
+</LinearLayout>

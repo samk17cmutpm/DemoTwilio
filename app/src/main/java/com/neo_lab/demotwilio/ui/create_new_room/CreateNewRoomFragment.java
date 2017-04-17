@@ -29,6 +29,7 @@ import butterknife.OnClick;
 
 public class CreateNewRoomFragment extends Fragment implements CreateNewRoomContract.View {
 
+
     private CreateNewRoomContract.Presenter presenter;
 
     private View root;
@@ -85,7 +86,6 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
         activity = getActivity();
 
         ToolbarUtils.initialize(toolbar, activity, R.string.app_name);
-
 
     }
 

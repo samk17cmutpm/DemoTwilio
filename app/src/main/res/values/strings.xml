@@ -6,6 +6,8 @@
 
     <string name="message_general_loading">Loading ....</string>
 
+    <string name="update_capability">Update Capability</string>
+
     <string name="send">Send</string>
 
     <string name="room_status">Connecting...</string>
@@ -30,4 +32,14 @@
     <string name="screen_capture_permission_not_granted">Screen capture permission not granted</string>
 
     <string name="permissions_needed">Camera and Microphone permissions needed. Please allow in App Settings for additional functionality.</string>
+
+    <string name="welcome">Welcome to Twilio Client</string>
+
+    <string name="client_name">client name</string>
+    <string name="phone_number">phone number</string>
+
+    <string-array name="types">
+        <item>Client</item>
+        <item>Phone Number</item>
+    </string-array>
 </resources>
