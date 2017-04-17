@@ -14,7 +14,19 @@ public interface MainContract {
 
         void showUI();
 
+        void getProperties();
+
+        // First Step
         void initializeVideoRoom();
+
+        // Second Step
+        void initializeChattingRoom();
+
+        // Third Step
+        void initializeCaptureScreen();
+
+        // Fourth Step
+        void initializeRecordVideo();
 
         void initializeCamera();
 

@@ -277,7 +277,17 @@ public class MainFragment extends Fragment implements MainContract.View {
 
         ButterKnife.bind(this, root);
 
+        getProperties();
+
         showUI();
+
+        initializeVideoRoom();
+
+        initializeChattingRoom();
+
+        initializeCaptureScreen();
+
+        initializeRecordVideo();
 
         // Request Token From Server
         presenter.requestToken(deviceId, userName);
@@ -303,12 +313,6 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public void showUI() {
 
-        activity = getActivity();
-
-        // Get Device Id
-        deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
-        userName = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.USER_NAME);
-
         ToolbarUtils.initialize(toolbar, activity, R.string.app_name, R.drawable.ic_message);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -318,6 +322,21 @@ public class MainFragment extends Fragment implements MainContract.View {
                 rlChattingCalling.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Override
+    public void getProperties() {
+
+        activity = getActivity();
+
+        // Get Device Id
+        deviceId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
+        userName = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.USER_NAME);
+
+    }
+
+    @Override
+    public void initializeVideoRoom() {
 
         /*
          * Enable changing the volume using the up/down keys during a conversation
@@ -342,6 +361,11 @@ public class MainFragment extends Fragment implements MainContract.View {
          * Set the initial state of the UI
          */
         intializeUI();
+
+    }
+
+    @Override
+    public void initializeChattingRoom() {
 
         messages = new ArrayList<>();
 
@@ -384,7 +408,16 @@ public class MainFragment extends Fragment implements MainContract.View {
             }
         });
 
+    }
 
+    @Override
+    public void initializeCaptureScreen() {
+
+
+    }
+
+    @Override
+    public void initializeRecordVideo() {
 
         DisplayMetrics metrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -427,10 +460,6 @@ public class MainFragment extends Fragment implements MainContract.View {
             }
         });
 
-    }
-
-    @Override
-    public void initializeVideoRoom() {
 
     }
 
@@ -1066,7 +1095,6 @@ public class MainFragment extends Fragment implements MainContract.View {
                 startScreenCapture();
                 break;
             case REQUEST_CODE:
-                Log.e(TAG, "REQUEST_CODE");
                 mMediaProjectionCallback = new MediaProjectionCallback();
                 mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
                 mMediaProjection.registerCallback(mMediaProjectionCallback, null);
