@@ -61,7 +61,7 @@ public class VideoCallingRoomPresenter implements VideoCallingRoomContract.Prese
 
                     @Override
                     public void handleViewOnConnectSeverError() {
-
+                        view.onListenerRequestVideoToken(false, "Internet is not available\nCheck and try again", null);
                     }
                 })
         );

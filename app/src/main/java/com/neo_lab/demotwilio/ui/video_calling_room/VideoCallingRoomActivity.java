@@ -330,7 +330,7 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
         return new Room.Listener() {
             @Override
             public void onConnected(Room room) {
-                videoStatusTextView.setText("Connected to the room number " + room.getName() + "\n There is only you in this room \n Please wait for another participant");
+                videoStatusTextView.setText("Connected to the room number " + room.getName() + "\nThere is only you in this room\nPlease wait for another participant");
                 setTitle(room.getName());
 
                 for (Map.Entry<String, Participant> entry : room.getParticipants().entrySet()) {
@@ -679,12 +679,18 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
 
         if (status) {
             connectToVideoRoom(roomNumber, token.getToken());
+        } else {
+            updateStatusRequestVideoToken(status, message);
         }
 
     }
 
     @Override
     public void updateStatusRequestVideoToken(boolean status, String message) {
+        if (!status) {
+            videoStatusTextView.setText(message);
+        }
+
 
     }
 }
