@@ -53,6 +53,10 @@
 
     <string name="user_connect_name_title">User Name</string>
 
+    <string name="content_leaving_room">Are you leaving the video room</string>
+    <string name="action_yes">Yes</string>
+    <string name="action_no">No</string>
+
     <string-array name="types">
         <item>Client</item>
         <item>Phone Number</item>

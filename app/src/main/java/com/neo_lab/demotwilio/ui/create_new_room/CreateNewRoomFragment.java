@@ -227,7 +227,7 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
     public void onButtonOkClick() {
 
         if (validateInputsForRoomExisted()) {
-            storeLocalData(SharedPreferencesManager.Key.ROOM_NUMBER, edRoomExisted.toString().toString());
+            storeLocalData(SharedPreferencesManager.Key.ROOM_NUMBER, edRoomExisted.getText().toString());
             showDialogToEnterUserName();
         }
 

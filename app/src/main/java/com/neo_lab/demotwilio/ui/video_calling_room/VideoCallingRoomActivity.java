@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.neo_lab.demotwilio.R;
 import com.neo_lab.demotwilio.model.Token;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
@@ -82,7 +84,7 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
     private LocalAudioTrack localAudioTrack;
     private LocalVideoTrack localVideoTrack;
 
-    @BindView(R.id.connect_action_fab) FloatingActionButton connectActionFab;
+    @BindView(R.id.dis_connect_action_fab) FloatingActionButton disConnectActionFab;
 
     @BindView(R.id.switch_camera_action_fab) FloatingActionButton switchCameraActionFab;
 
@@ -276,16 +278,33 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
     }
 
     private void intializeUI() {
-        connectActionFab.setImageDrawable(ContextCompat.getDrawable(this,
-                R.drawable.ic_call_white_24px));
-        connectActionFab.show();
-        connectActionFab.setOnClickListener(connectActionClickListener());
         switchCameraActionFab.show();
         switchCameraActionFab.setOnClickListener(switchCameraClickListener());
         localVideoActionFab.show();
         localVideoActionFab.setOnClickListener(localVideoClickListener());
         muteActionFab.show();
         muteActionFab.setOnClickListener(muteClickListener());
+
+        disConnectActionFab.show();
+        disConnectActionFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(VideoCallingRoomActivity.this)
+                        .title(R.string.app_name)
+                        .content(R.string.content_leaving_room)
+                        .positiveText(R.string.action_yes)
+                        .negativeText(R.string.action_no)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                finish();
+
+                            }
+                        })
+                        .show();
+            }
+        });
     }
 
     private void createLocalMedia() {
@@ -559,10 +578,7 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
  * The actions performed during disconnect.
  */
     private void setDisconnectAction() {
-        connectActionFab.setImageDrawable(ContextCompat.getDrawable(this,
-                R.drawable.ic_call_end_white_24px));
-        connectActionFab.show();
-        connectActionFab.setOnClickListener(disconnectClickListener());
+
     }
 
     /*
@@ -583,10 +599,6 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
          * This app only displays video for one additional participant per Room
          */
         if (thumbnailVideoView.getVisibility() == View.VISIBLE) {
-            Snackbar.make(connectActionFab,
-                    "Multiple participants are not currently support in this UI",
-                    Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
             return;
         }
         participantIdentity = participant.getIdentity();
