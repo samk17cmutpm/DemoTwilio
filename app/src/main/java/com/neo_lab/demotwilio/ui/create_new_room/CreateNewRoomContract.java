@@ -1,5 +1,7 @@
 package com.neo_lab.demotwilio.ui.create_new_room;
 
+import android.widget.Button;
+
 import com.neo_lab.demotwilio.ui.base.BasePresenter;
 import com.neo_lab.demotwilio.ui.base.BaseView;
 
@@ -10,16 +12,22 @@ import com.neo_lab.demotwilio.ui.base.BaseView;
 public interface CreateNewRoomContract {
 
     interface View extends BaseView<Presenter> {
+
         void showUI();
 
-        boolean validateInputs();
+        void updateUIStatusForTabButton(Button btActive, Button btNotActive);
 
-        void storeNewRoomName(String roomName, String userName);
+        boolean validateInputsForRoomExisted();
 
-        void navigateToMainActivity();
+        void navigateToVideoCallingActivity();
+
+        void storeNewRoomNumber(String roomNumber);
+
     }
 
     interface Presenter extends BasePresenter {
-        void storeNewRoomName(String roomName);
+
+        String generateRoomNumber();
+
     }
 }

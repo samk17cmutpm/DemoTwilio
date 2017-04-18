@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Calling-1.0</string>
+    <string name="app_name">CALLING - 1.0</string>
 
 
     <string name="error_general_input_empty">Please fill here</string>
@@ -42,6 +42,12 @@
 
     <string name="client_name">client name</string>
     <string name="phone_number">phone number</string>
+    <string name="create_new_room">Please click the following button If you are not belonging to any room now</string>
+    <string name="room_existed">Please enter the room code If you already have one</string>
+    <string name="tab_customer">Customer</string>
+    <string name="tab_company">Company</string>
+    <string name="user_connect_room_guide">Please click here</string>
+    <string name="user_connect_room_hint">Enter the room number</string>
 
     <string-array name="types">
         <item>Client</item>

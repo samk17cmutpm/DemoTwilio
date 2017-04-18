@@ -4,6 +4,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="bt_active">#FFC107</color>
+    <color name="bt_active_dark">#FFA000</color>
+
+
+    <color name="black">#212121</color>
     <color name="white">#FFFFFF</color>
     <color name="general_button_background">#424c56</color>
 </resources>
