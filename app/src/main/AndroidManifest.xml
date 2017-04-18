@@ -18,8 +18,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
-
     <application
         android:name=".DemoTwilioApplication"
         android:allowBackup="true"
@@ -28,8 +26,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <service android:name="com.twilio.client.TwilioClientService" android:exported="false" android:stopWithTask="true"/>
-        <activity android:name=".ui.create_new_room.CreateNewRoomActivity">
+        <service
+            android:name="com.twilio.client.TwilioClientService"
+            android:exported="false"
+            android:stopWithTask="true" />
+
+        <activity
+            android:name=".ui.create_new_room.CreateNewRoomActivity"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="WelcomeActivity" />
                 <action android:name="android.intent.action.MAIN" />
@@ -41,8 +45,12 @@
         <activity android:name=".ui.main.MainActivity" />
         <activity android:name=".ui.chatting.ChattingActivity" />
         <activity android:name=".ui.recording_screen.RecordingScreenActivity" />
-        <activity android:name=".ui.connecting_room.ConnectingRoomActivity"></activity>
-        <activity android:name=".ui.client_call.ClientCallActivity"></activity>
+        <activity android:name=".ui.connecting_room.ConnectingRoomActivity" />
+        <activity android:name=".ui.client_call.ClientCallActivity" />
+        <activity
+            android:name=".ui.video_calling_room.VideoCallingRoomActivity"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

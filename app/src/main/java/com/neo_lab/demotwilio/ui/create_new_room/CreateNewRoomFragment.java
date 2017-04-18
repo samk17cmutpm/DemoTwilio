@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.neo_lab.demotwilio.R;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
 import com.neo_lab.demotwilio.ui.main.MainActivity;
+import com.neo_lab.demotwilio.ui.video_calling_room.VideoCallingRoomActivity;
 import com.neo_lab.demotwilio.utils.activity.ActivityUtils;
 
 import butterknife.BindView;
@@ -143,7 +143,7 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
 
     @Override
     public void navigateToVideoCallingActivity() {
-        ActivityUtils.startActivity(activity, MainActivity.class);
+        ActivityUtils.startActivity(activity, VideoCallingRoomActivity.class);
     }
 
     @Override
@@ -227,7 +227,7 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
     public void onButtonOkClick() {
 
         if (validateInputsForRoomExisted()) {
-            storeLocalData(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT, edRoomExisted.toString().toString());
+            storeLocalData(SharedPreferencesManager.Key.ROOM_NUMBER, edRoomExisted.toString().toString());
             showDialogToEnterUserName();
         }
 
@@ -236,7 +236,7 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
     @OnClick(R.id.im_connect_to_room)
     public void onImageViewConnectToRoomClick() {
 
-        storeLocalData(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT, tvCustomerNameRoom.getText().toString());
+        storeLocalData(SharedPreferencesManager.Key.ROOM_NUMBER, tvCustomerNameRoom.getText().toString());
         showDialogToEnterUserName();
 
     }

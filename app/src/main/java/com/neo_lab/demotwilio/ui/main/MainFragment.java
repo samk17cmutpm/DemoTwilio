@@ -4,7 +4,6 @@ package com.neo_lab.demotwilio.ui.main;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
@@ -65,8 +64,6 @@ import com.twilio.video.Video;
 import com.twilio.video.VideoRenderer;
 import com.twilio.video.VideoTrack;
 import com.twilio.video.VideoView;
-
-import org.webrtc.ScreenCapturerAndroid;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -422,7 +419,7 @@ public class MainFragment extends Fragment implements MainContract.View {
         updateStatusRequestVideoToken(status, message);
 
         if (status) {
-            String nameRoom = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT);
+            String nameRoom = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.ROOM_NUMBER);
             connectToVideoRoom(nameRoom, token.getToken());
         }
 
@@ -952,7 +949,7 @@ public class MainFragment extends Fragment implements MainContract.View {
 
 
     private void loadChannels() {
-        final String nameRoomChat = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT);
+        final String nameRoomChat = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.ROOM_NUMBER);
         chatClient.getChannels().getChannel(nameRoomChat, new CallbackListener<Channel>() {
             @Override
             public void onSuccess(Channel channel) {

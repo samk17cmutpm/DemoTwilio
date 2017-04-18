@@ -202,7 +202,7 @@ public class ChattingFragment extends Fragment implements ChattingContract.View 
     }
 
     private void loadChannels() {
-        final String nameRoomChat = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT);
+        final String nameRoomChat = SharedPreferencesManager.getInstance(activity).getString(SharedPreferencesManager.Key.ROOM_NUMBER);
         chatClient.getChannels().getChannel(nameRoomChat, new CallbackListener<Channel>() {
             @Override
             public void onSuccess(Channel channel) {

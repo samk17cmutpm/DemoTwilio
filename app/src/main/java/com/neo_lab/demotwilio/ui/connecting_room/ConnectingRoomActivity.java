@@ -423,7 +423,7 @@ public class ConnectingRoomActivity extends AppCompatActivity implements Connect
         updateStatusRequestVideoToken(status, message);
 
         if (status) {
-            String nameRoom = SharedPreferencesManager.getInstance(ConnectingRoomActivity.this).getString(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT);
+            String nameRoom = SharedPreferencesManager.getInstance(ConnectingRoomActivity.this).getString(SharedPreferencesManager.Key.ROOM_NUMBER);
             connectToRoom(nameRoom, token.getToken());
         }
 
@@ -734,7 +734,7 @@ public class ConnectingRoomActivity extends AppCompatActivity implements Connect
     }
 
     private void loadChannels() {
-        final String nameRoomChat = SharedPreferencesManager.getInstance(ConnectingRoomActivity.this).getString(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT);
+        final String nameRoomChat = SharedPreferencesManager.getInstance(ConnectingRoomActivity.this).getString(SharedPreferencesManager.Key.ROOM_NUMBER);
         chatClient.getChannels().getChannel(nameRoomChat, new CallbackListener<Channel>() {
             @Override
             public void onSuccess(Channel channel) {
