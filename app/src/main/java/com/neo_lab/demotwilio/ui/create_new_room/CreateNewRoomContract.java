@@ -2,6 +2,7 @@ package com.neo_lab.demotwilio.ui.create_new_room;
 
 import android.widget.Button;
 
+import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
 import com.neo_lab.demotwilio.ui.base.BasePresenter;
 import com.neo_lab.demotwilio.ui.base.BaseView;
 
@@ -21,7 +22,9 @@ public interface CreateNewRoomContract {
 
         void navigateToVideoCallingActivity();
 
-        void storeNewRoomNumber(String roomNumber);
+        void storeLocalData(SharedPreferencesManager.Key key, String value);
+
+        void showDialogToEnterUserName();
 
     }
 

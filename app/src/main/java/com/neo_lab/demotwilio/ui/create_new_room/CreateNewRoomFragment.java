@@ -3,9 +3,12 @@ package com.neo_lab.demotwilio.ui.create_new_room;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.neo_lab.demotwilio.R;
 import com.neo_lab.demotwilio.share_preferences_manager.SharedPreferencesManager;
 import com.neo_lab.demotwilio.ui.main.MainActivity;
@@ -32,29 +37,21 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
 
     private View root;
 
-    @BindView(R.id.bt_customer)
-    Button btCustomer;
+    @BindView(R.id.bt_customer) Button btCustomer;
 
-    @BindView(R.id.bt_company)
-    Button btCompany;
+    @BindView(R.id.bt_company) Button btCompany;
 
-    @BindView(R.id.rl_customer)
-    RelativeLayout rlCustomer;
+    @BindView(R.id.rl_customer) RelativeLayout rlCustomer;
 
-    @BindView(R.id.rl_company)
-    RelativeLayout rlCompnay;
+    @BindView(R.id.rl_company) RelativeLayout rlCompnay;
 
-    @BindView(R.id.im_connect_to_room)
-    ImageView imConnectToRoom;
+    @BindView(R.id.im_connect_to_room) ImageView imConnectToRoom;
 
-    @BindView(R.id.ed_room_existed)
-    EditText edRoomExisted;
+    @BindView(R.id.ed_room_existed) EditText edRoomExisted;
 
-    @BindView(R.id.tv_customer_name_room)
-    TextView tvCustomerNameRoom;
+    @BindView(R.id.tv_customer_name_room) TextView tvCustomerNameRoom;
 
-    @BindView(R.id.bt_ok)
-    Button btOk;
+    @BindView(R.id.bt_ok) Button btOk;
 
     private Activity activity;
 
@@ -150,8 +147,45 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
     }
 
     @Override
-    public void storeNewRoomNumber(String roomNumber) {
-        SharedPreferencesManager.getInstance(activity).put(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT, roomNumber);
+    public void storeLocalData(SharedPreferencesManager.Key key, String value) {
+        SharedPreferencesManager.getInstance(activity).put(key, value);
+    }
+
+    @Override
+    public void showDialogToEnterUserName() {
+        new MaterialDialog.Builder(activity)
+                .title(R.string.app_name)
+                .content(R.string.user_name_hint)
+                .cancelable(false)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .alwaysCallInputCallback()
+                .input(R.string.user_connect_name_title, R.string.emtpy, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+
+                        if (input.toString().isEmpty()) {
+
+                            dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+
+                        } else {
+
+                            dialog.getActionButton(DialogAction.POSITIVE).setEnabled(true);
+
+                            storeLocalData(SharedPreferencesManager.Key.USER_NAME, input.toString());
+
+                        }
+
+                    }
+                })
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                        navigateToVideoCallingActivity();
+
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -193,8 +227,8 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
     public void onButtonOkClick() {
 
         if (validateInputsForRoomExisted()) {
-            storeNewRoomNumber(edRoomExisted.toString().toString());
-            navigateToVideoCallingActivity();
+            storeLocalData(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT, edRoomExisted.toString().toString());
+            showDialogToEnterUserName();
         }
 
     }
@@ -202,8 +236,8 @@ public class CreateNewRoomFragment extends Fragment implements CreateNewRoomCont
     @OnClick(R.id.im_connect_to_room)
     public void onImageViewConnectToRoomClick() {
 
-        storeNewRoomNumber(tvCustomerNameRoom.getText().toString());
-        navigateToVideoCallingActivity();
+        storeLocalData(SharedPreferencesManager.Key.NAME_OF_ROOM_CHAT, tvCustomerNameRoom.getText().toString());
+        showDialogToEnterUserName();
 
     }
 

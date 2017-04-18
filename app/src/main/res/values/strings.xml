@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">CALLING - 1.0</string>
 
+    <string name="emtpy"></string>
+
 
     <string name="error_general_input_empty">Please fill here</string>
 
@@ -48,6 +50,8 @@
     <string name="tab_company">Company</string>
     <string name="user_connect_room_guide">Please click here</string>
     <string name="user_connect_room_hint">Enter the room number</string>
+
+    <string name="user_connect_name_title">User Name</string>
 
     <string-array name="types">
         <item>Client</item>
