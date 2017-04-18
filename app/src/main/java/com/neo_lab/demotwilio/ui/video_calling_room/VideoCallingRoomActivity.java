@@ -61,7 +61,6 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
     private String userName;
 
     private String roomNumber;
-
     /*
      * A Room represents communication between a local participant and one or more participants.
      */
@@ -80,8 +79,11 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
     @BindView(R.id.video_status_textview) TextView videoStatusTextView;
 
     private CameraCapturer cameraCapturer;
+
     private LocalMedia localMedia;
+
     private LocalAudioTrack localAudioTrack;
+
     private LocalVideoTrack localVideoTrack;
 
     @BindView(R.id.dis_connect_action_fab) FloatingActionButton disConnectActionFab;
@@ -328,7 +330,7 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
         return new Room.Listener() {
             @Override
             public void onConnected(Room room) {
-                videoStatusTextView.setText("Connected to " + room.getName());
+                videoStatusTextView.setText("Connected to the room number " + room.getName() + "\n There is only you in this room \n Please wait for another participant");
                 setTitle(room.getName());
 
                 for (Map.Entry<String, Participant> entry : room.getParticipants().entrySet()) {
@@ -391,6 +393,7 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
             @Override
             public void onAudioTrackAdded(Media media, AudioTrack audioTrack) {
                 videoStatusTextView.setText("onAudioTrackAdded");
+                videoStatusTextView.setText("You are in the room number " + roomNumber);
             }
 
             @Override
@@ -598,9 +601,9 @@ public class VideoCallingRoomActivity extends AppCompatActivity implements Video
         /*
          * This app only displays video for one additional participant per Room
          */
-        if (thumbnailVideoView.getVisibility() == View.VISIBLE) {
-            return;
-        }
+//        if (thumbnailVideoView.getVisibility() == View.VISIBLE) {
+//            return;
+//        }
         participantIdentity = participant.getIdentity();
         videoStatusTextView.setText("Participant "+ participantIdentity + " joined");
 

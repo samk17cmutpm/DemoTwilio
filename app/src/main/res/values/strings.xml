@@ -12,7 +12,7 @@
 
     <string name="send">Send</string>
 
-    <string name="room_status">Connecting...</string>
+    <string name="room_status">Connecting the calling video room</string>
 
     <string name="label_permissions">Please enable Microphone and Storage permissions.</string>
 
